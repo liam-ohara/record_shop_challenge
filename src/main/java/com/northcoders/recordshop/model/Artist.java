@@ -15,9 +15,12 @@ public class Artist {
     @Id
     @GeneratedValue
     @Column(updatable = false, nullable = false)
-    Long id;
+    private Long id;
 
     @Column
-    String name;
+    private String name;
+
+    @OneToOne(mappedBy = "album")
+    private Album album;
 
 }
