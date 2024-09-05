@@ -4,9 +4,12 @@ import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Autowired
@@ -14,7 +17,10 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public List<Album> getAllAlbums() {
-        return null;
+        List<Album> albumList = new ArrayList<>();
+        albumRepository.findAll().forEach(albumList::add);
+        return albumList;
+
     }
 
     @Override

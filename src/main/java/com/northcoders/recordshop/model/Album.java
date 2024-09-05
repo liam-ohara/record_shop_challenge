@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -19,25 +20,23 @@ public class Album {
 
     @Id
     @GeneratedValue
-    @Column(updatable = false, nullable = false)
-    private Long id;
+    @Column
+    Long albumId;
 
     @Column
-    private String name;
+    String name;
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "artist_Id")
+    Artist artist;
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "publisher_Id")
+    Publisher publisher;
 
     @Column
-    @OneToOne (cascade = CascadeType.ALL)
-    @JoinColumn(name = "artist_id", referencedColumnName = "id")
-    private Artist artist;
+    LocalDate releaseDate;
 
     @Column
-    @OneToOne (cascade = CascadeType.ALL)
-    @JoinColumn(name = "publisher_id", referencedColumnName = "id")
-    private Publisher publisher;
-
-    @Column
-    private Date releaseDate;
-
-    @Column
-    private Genre genre;
+    Genre genre;
 }

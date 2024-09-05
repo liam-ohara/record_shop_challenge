@@ -1,10 +1,7 @@
 package com.northcoders.recordshop.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
@@ -16,13 +13,12 @@ import lombok.NoArgsConstructor;
 public class Publisher {
 
     @Id
-    @GeneratedValue
-    @Column(updatable = false, nullable = false)
-    private Long id;
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column (name = "publisher_id")
+    Long publisherId;
 
     @Column
-    private String name;
+    String name;
 
-    @OneToOne (mappedBy = "album")
-    private Album album;
+
 }

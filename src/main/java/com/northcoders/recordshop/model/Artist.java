@@ -13,14 +13,13 @@ import lombok.*;
 public class Artist {
 
     @Id
-    @GeneratedValue
-    @Column(updatable = false, nullable = false)
-    private Long id;
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column (name = "artist_id")
+    Long artistId;
 
     @Column
-    private String name;
+    String name;
 
-    @OneToOne(mappedBy = "album")
-    private Album album;
+
 
 }
