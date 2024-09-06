@@ -195,4 +195,21 @@ public class AlbumManagerControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Returns JSON of album to be PUT and returns HTTP CREATED by passed valid JSON if album does not already exist.")
+    public void testAlbumManagerController_updateAlbum_WhenAlbumDoesNotExist() throws Exception{
+        when(mockAlbumManagerServiceImpl.updateAlbum(menschMaschine.getAlbumId(), menschMaschine)).thenReturn(menschMaschine);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.post("/api/v1/album/")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(menschMaschine)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
+    }
+
+
+
 }

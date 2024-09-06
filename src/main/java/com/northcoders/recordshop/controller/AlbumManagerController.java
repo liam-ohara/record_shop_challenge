@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.PutExchange;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,9 +37,7 @@ public class AlbumManagerController {
             return new ResponseEntity<>(album, HttpStatus.OK);
         } catch (RuntimeException e) {
            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-
         }
-
     }
 
     @PostMapping
@@ -56,6 +55,12 @@ public class AlbumManagerController {
         } catch (HttpMediaTypeNotAcceptableException e) {
             return  new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Album> updateAlbum (@RequestBody Album updatedAlbum, @PathVariable Long id) {
+        Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
+        return new ResponseEntity<>(putAlbum, HttpStatus.CREATED);
     }
 
 

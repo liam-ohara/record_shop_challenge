@@ -35,6 +35,7 @@ class AlbumManagerServiceImplTest {
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
+    Album invalidAlbumDate = new Album();
 
     @BeforeEach
     public void setup() {
@@ -63,6 +64,14 @@ class AlbumManagerServiceImplTest {
                 .artist(kraftWerk)
                 .publisher(klingKlang)
                 .releaseDate(LocalDate.of(1981, 2, 11))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        invalidAlbumDate = Album.builder()
+                .name("Electric Café")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(2981, 2, 11))
                 .genre(Genre.ELECTRONIC)
                 .build();
     }
@@ -134,6 +143,7 @@ class AlbumManagerServiceImplTest {
                 () -> assertNull(thrown.getCause()));
 
     }
+
 
 
 
