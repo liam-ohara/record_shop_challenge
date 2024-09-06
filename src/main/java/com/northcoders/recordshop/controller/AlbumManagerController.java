@@ -6,6 +6,7 @@ import com.northcoders.recordshop.service.AlbumManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,8 +42,16 @@ public class AlbumManagerController {
 
     @PostMapping
     public ResponseEntity<Album> insertAlbum(@RequestBody Album album) {
-        albumManagerService.insertAlbum(album);
-        return new ResponseEntity<>(album, HttpStatus.CREATED);
+        try {
+            albumManagerService.insertAlbum(album);
+           if (album.getName() == null || album.getArtist() == null || album.getPublisher() == null || album.getReleaseDate() == null || album.getGenre() == null) {
+               throw new HttpMediaTypeNotAcceptableException("Malformed JSON");
+           } else {
+               return new ResponseEntity<>(album, HttpStatus.CREATED);
+           }
+        } catch (HttpMediaTypeNotAcceptableException e) {
+            return  new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 

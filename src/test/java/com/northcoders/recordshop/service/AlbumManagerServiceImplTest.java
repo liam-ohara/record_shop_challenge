@@ -107,4 +107,6 @@ class AlbumManagerServiceImplTest {
                 () -> assertEquals("No album found with that id: 3", thrown.getMessage()),
                 () -> assertNull(thrown.getCause()));
     }
+
+
 }

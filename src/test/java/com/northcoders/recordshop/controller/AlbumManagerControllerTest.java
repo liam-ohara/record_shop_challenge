@@ -44,13 +44,12 @@ public class AlbumManagerControllerTest {
 
     private ObjectMapper mapper;
 
-
-
     List<Album> albumList = new ArrayList<>();
     Artist kraftWerk = new Artist();
     Publisher klingKlang = new Publisher();
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
+    Album invalidAlbum = new Album();
 
     @BeforeEach
     public void setup() {
@@ -85,10 +84,10 @@ public class AlbumManagerControllerTest {
                 .releaseDate(LocalDate.of(1981, 2, 11))
                 .genre(Genre.ELECTRONIC)
                 .build();
+
+        invalidAlbum = Album.builder()
+                .build();
     }
-
-
-
 
     @Test
     @DisplayName("Returns list of all albums when GET instructions sent to /album end point")
@@ -142,7 +141,8 @@ public class AlbumManagerControllerTest {
     }
 
     @Test
-    public void testAlbumManagerController_postAlbum_WithValidJSON() throws Exception {
+    @DisplayName("Returns JSON of new album to be posted and returns HTTP CREATED by passed valid JSON.")
+    public void testAlbumManagerController_insertAlbum_WithValidJSON() throws Exception {
 
         when(mockAlbumManagerServiceImpl.insertAlbum(menschMaschine)).thenReturn(menschMaschine);
 
@@ -152,6 +152,22 @@ public class AlbumManagerControllerTest {
                         .content(mapper.writeValueAsString(menschMaschine)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
         verify(mockAlbumManagerServiceImpl, times(1)).insertAlbum(menschMaschine);
+    }
+
+    @Test
+    @DisplayName("Returns 406 Not Acceptable error when invalid JSON submitted as part of POST request")
+    public void testAlbumManagerController_insertAlbum_WithJSONMissingRequiredFields() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.insertAlbum(invalidAlbum)).thenReturn(invalidAlbum);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.post("/api/v1/album/")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(invalidAlbum)))
+                .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").doesNotExist());
+
     }
 
 }
