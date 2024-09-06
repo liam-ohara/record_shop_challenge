@@ -6,9 +6,7 @@ import com.northcoders.recordshop.service.AlbumManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +21,22 @@ public class AlbumManagerController {
     public ResponseEntity<List<Album>> getAllAlbums() {
         List<Album> albumList = albumManagerService.getAllAlbums();
         return new ResponseEntity<>(albumList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Album> getAlbumById(@PathVariable Long id) {
+        Album album;
+        try {
+            album = albumManagerService.getAlbumById(id);
+            if (album == null) {
+                throw new RuntimeException();
+            }
+            return new ResponseEntity<>(album, HttpStatus.OK);
+        } catch (RuntimeException e) {
+           return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+
+        }
+
     }
 
 

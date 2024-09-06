@@ -5,6 +5,7 @@ import com.northcoders.recordshop.model.Artist;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.model.Publisher;
 import com.northcoders.recordshop.service.AlbumManagerServiceImpl;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
@@ -39,37 +41,37 @@ public class AlbumManagerControllerTest {
     public void setup() {
         mockMvcController = MockMvcBuilders.standaloneSetup(albumManagerController).build();
     }
+    List<Album> albumList = new ArrayList<>();
+    Artist kraftWerk = Artist.builder()
+            .artistId(1L)
+            .name("Kraftwerk").build();
+
+    Publisher klingKlang = Publisher.builder()
+            .publisherId(1L)
+            .name("Kling Klang")
+            .build();
+
+    Album menschMaschine = Album.builder()
+            .albumId(1L)
+            .name("Die Mensch-Maschine")
+            .artist(kraftWerk)
+            .publisher(klingKlang)
+            .releaseDate(LocalDate.of(1978, 4, 28))
+            .genre(Genre.ELECTRONIC)
+            .build();
+
+    Album computerWelt = Album.builder()
+            .albumId(2L)
+            .name("Computerwelt")
+            .artist(kraftWerk)
+            .publisher(klingKlang)
+            .releaseDate(LocalDate.of(1981, 2, 11))
+            .genre(Genre.ELECTRONIC)
+            .build();
 
     @Test
     @DisplayName("Returns list of all albums when GET instructions sent to /album end point")
     public void testAlbumManagerController_getAllAlbums() throws Exception {
-        List<Album> albumList = new ArrayList<>();
-        Artist kraftWerk = Artist.builder()
-                .artistId(1L)
-                .name("Kraftwerk").build();
-
-        Publisher klingKlang = Publisher.builder()
-                .publisherId(1L)
-                .name("Kling Klang")
-        .build();
-
-        Album menschMaschine = Album.builder()
-                .albumId(1L)
-                .name("Die Mensch-Maschine")
-                .artist(kraftWerk)
-                .publisher(klingKlang)
-                .releaseDate(LocalDate.of(1978, 4, 28))
-                .genre(Genre.ELECTRONIC)
-                .build();
-
-        Album computerWelt = Album.builder()
-                .albumId(2L)
-                .name("Computerwelt")
-                .artist(kraftWerk)
-                .publisher(klingKlang)
-                .releaseDate(LocalDate.of(1981, 2, 11))
-                .genre(Genre.ELECTRONIC)
-                .build();
 
         albumList.add(menschMaschine);
         albumList.add(computerWelt);
@@ -79,6 +81,7 @@ public class AlbumManagerControllerTest {
         this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album"))
 
          .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Die Mensch-Maschine"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()))
@@ -87,4 +90,34 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].genre").value(Genre.ELECTRONIC.toString()));
 
     }
+
+    @Test
+    @DisplayName("Returns JSON with album details when passed query parameter containing valid id.")
+    public void testAlbumManagerController_getAlbumById_WithValidId() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1"))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
+
+    }
+
+    @Test
+    @DisplayName("Returns handled exception when passed query parameter containing invalid id.")
+    public void testAlbumManagerController_getAlbumById_WithInvalidId() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.getAlbumById(2L)).thenReturn(null);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/2"))
+
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").doesNotExist());
+    }
+
 }
