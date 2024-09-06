@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -45,8 +46,11 @@ public class AlbumManagerController {
         try {
             albumManagerService.insertAlbum(album);
            if (album.getName() == null || album.getArtist() == null || album.getPublisher() == null || album.getReleaseDate() == null || album.getGenre() == null) {
-               throw new HttpMediaTypeNotAcceptableException("Malformed JSON");
-           } else {
+               throw new HttpMediaTypeNotAcceptableException("Malformed JSON.");
+           } else if (album.getReleaseDate().isAfter(LocalDate.now())) {
+               throw new HttpMediaTypeNotAcceptableException("Release date cannot be in the future.");
+                          }
+           else {
                return new ResponseEntity<>(album, HttpStatus.CREATED);
            }
         } catch (HttpMediaTypeNotAcceptableException e) {

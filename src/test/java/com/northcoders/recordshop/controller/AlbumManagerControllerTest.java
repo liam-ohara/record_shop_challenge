@@ -50,6 +50,7 @@ public class AlbumManagerControllerTest {
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
+    Album invalidAlbumDate = new Album();
 
     @BeforeEach
     public void setup() {
@@ -86,6 +87,14 @@ public class AlbumManagerControllerTest {
                 .build();
 
         invalidAlbum = Album.builder()
+                .build();
+
+        invalidAlbumDate = Album.builder()
+                .name("Electric Café")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(2981, 2, 11))
+                .genre(Genre.ELECTRONIC)
                 .build();
     }
 
@@ -167,6 +176,22 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").doesNotExist());
+
+    }
+
+    @Test
+    @DisplayName("Returns 406 Not Acceptable error when JSON with invalid release date submitted as part of POST request")
+    public void testAlbumManagerController_insertAlbum_WithInvalidReleaseData() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.insertAlbum(invalidAlbumDate)).thenReturn(invalidAlbumDate);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.post("/api/v1/album/")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(invalidAlbumDate)))
+                .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
+                .andDo(MockMvcResultHandlers.print());
+
 
     }
 
