@@ -62,7 +62,8 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album updateAlbum(Long id, Album album) {
-        return null;
+        albumRepository.save(album);
+        return album;
     }
 
     @Override

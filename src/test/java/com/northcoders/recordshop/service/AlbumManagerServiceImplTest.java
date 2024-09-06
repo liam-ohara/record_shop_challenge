@@ -144,6 +144,17 @@ class AlbumManagerServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Returns album that was posted when passed valid album object")
+    public void testAlbumManagerService_updateAlbum_WhenAlbumDoesNotExist() {
+
+        when(mockAlbumRepository.save(menschMaschine)).thenReturn(menschMaschine);
+
+        Album result = albumManagerServiceImpl.updateAlbum(menschMaschine.getAlbumId(), menschMaschine);
+
+        assertEquals(menschMaschine, result);
+    }
+
 
 
 

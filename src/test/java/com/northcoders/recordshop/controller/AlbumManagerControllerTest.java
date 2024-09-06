@@ -267,11 +267,5 @@ public class AlbumManagerControllerTest {
                                 .content(mapper.writeValueAsString(invalidAlbumDate)))
                 .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
                 .andDo(MockMvcResultHandlers.print());
-
-
     }
-
-
-
-
 }
