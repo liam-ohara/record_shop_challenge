@@ -34,6 +34,7 @@ class AlbumManagerServiceImplTest {
     Publisher klingKlang = new Publisher();
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
+    Album invalidAlbum = new Album();
 
     @BeforeEach
     public void setup() {
@@ -94,7 +95,7 @@ class AlbumManagerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Returns null when passed an invalid album ID")
+    @DisplayName("Throws NullPointerException when passed an invalid album ID")
     public void testAlbumManagerService_getAlbumById_WhenPassedInvalidId() {
 
         when(mockAlbumRepository.findById(3L)).thenThrow(new NullPointerException("No album found with that id: 3"));
@@ -118,6 +119,23 @@ class AlbumManagerServiceImplTest {
 
         assertEquals(menschMaschine, result);
     }
+
+    @Test
+    @DisplayName("Throws NullPointerException when passed an album with one or more missing require fields.")
+    public void testAlbumManagerService_insertAlbum_WhenPassedNullAlbum() {
+        when(mockAlbumRepository.save(invalidAlbum)).thenReturn(invalidAlbum);
+
+        NullPointerException thrown = Assertions.assertThrows(NullPointerException.class, () -> {
+            albumManagerServiceImpl.insertAlbum(invalidAlbum);
+        }, "NullPointerException was expected");
+
+        assertAll(
+                () -> assertEquals("Missing field(s) in album.", thrown.getMessage()),
+                () -> assertNull(thrown.getCause()));
+
+    }
+
+
 
 
 }

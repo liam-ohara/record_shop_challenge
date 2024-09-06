@@ -53,6 +53,9 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album insertAlbum(Album album) {
+        if (album.getName() == null || album.getArtist() == null || album.getPublisher() == null || album.getReleaseDate() == null || album.getGenre() == null) {
+            throw new NullPointerException("Missing field(s) in album.");
+        }
         albumRepository.save(album);
         return album;
     }
