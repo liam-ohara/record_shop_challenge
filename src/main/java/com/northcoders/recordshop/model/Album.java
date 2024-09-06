@@ -19,19 +19,19 @@ import java.util.Date;
 public class Album {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column
     Long albumId;
 
     @Column
     String name;
 
-    @OneToOne
-    @JoinColumn(referencedColumnName = "artist_Id")
+    @OneToOne (cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "artist_id", nullable = false)
     Artist artist;
 
-    @OneToOne
-    @JoinColumn(referencedColumnName = "publisher_Id")
+    @OneToOne (cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "publisher_id", nullable = false)
     Publisher publisher;
 
     @Column

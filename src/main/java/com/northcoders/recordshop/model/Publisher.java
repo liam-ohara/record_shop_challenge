@@ -13,7 +13,7 @@ import lombok.*;
 public class Publisher {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.SEQUENCE)
     @Column (name = "publisher_id")
     Long publisherId;
 

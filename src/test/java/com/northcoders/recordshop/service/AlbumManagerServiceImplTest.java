@@ -5,6 +5,7 @@ import com.northcoders.recordshop.model.Artist;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.model.Publisher;
 import com.northcoders.recordshop.repository.AlbumRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,6 +31,7 @@ class AlbumManagerServiceImplTest {
 
 
     @Test
+    @DisplayName("Returns a list of all albums when method called.")
     public void testAlbumManagerService_getAllAlbums() {
 
         List<Album> albumList = new ArrayList<>();
