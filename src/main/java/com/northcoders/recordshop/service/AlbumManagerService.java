@@ -19,9 +19,9 @@ public interface AlbumManagerService {
 
     Album getAlbumByAlbumName(String albumName);
 
-    void insertAlbum(Album album);
+    Album insertAlbum(Album album);
 
-    void updateAlbum(Long id, Album album);
+    Album updateAlbum(Long id, Album album);
 
     void deleteAlbum(Long id);
 }

@@ -1,5 +1,7 @@
 package com.northcoders.recordshop.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Artist;
 import com.northcoders.recordshop.model.Genre;
@@ -14,6 +16,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -22,7 +25,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -37,37 +42,53 @@ public class AlbumManagerControllerTest {
     @Autowired
     private MockMvc mockMvcController;
 
+    private ObjectMapper mapper;
+
+
+
+    List<Album> albumList = new ArrayList<>();
+    Artist kraftWerk = new Artist();
+    Publisher klingKlang = new Publisher();
+    Album menschMaschine = new Album();
+    Album computerWelt = new Album();
+
     @BeforeEach
     public void setup() {
         mockMvcController = MockMvcBuilders.standaloneSetup(albumManagerController).build();
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        List<Album> albumList = new ArrayList<>();
+        kraftWerk = Artist.builder()
+                .artistId(1L)
+                .name("Kraftwerk").build();
+
+        klingKlang = Publisher.builder()
+                .publisherId(1L)
+                .name("Kling Klang")
+                .build();
+
+        menschMaschine = Album.builder()
+                .albumId(1L)
+                .name("Die Mensch-Maschine")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1978, 4, 28))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        computerWelt = Album.builder()
+                .albumId(2L)
+                .name("Computerwelt")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1981, 2, 11))
+                .genre(Genre.ELECTRONIC)
+                .build();
     }
-    List<Album> albumList = new ArrayList<>();
-    Artist kraftWerk = Artist.builder()
-            .artistId(1L)
-            .name("Kraftwerk").build();
 
-    Publisher klingKlang = Publisher.builder()
-            .publisherId(1L)
-            .name("Kling Klang")
-            .build();
 
-    Album menschMaschine = Album.builder()
-            .albumId(1L)
-            .name("Die Mensch-Maschine")
-            .artist(kraftWerk)
-            .publisher(klingKlang)
-            .releaseDate(LocalDate.of(1978, 4, 28))
-            .genre(Genre.ELECTRONIC)
-            .build();
 
-    Album computerWelt = Album.builder()
-            .albumId(2L)
-            .name("Computerwelt")
-            .artist(kraftWerk)
-            .publisher(klingKlang)
-            .releaseDate(LocalDate.of(1981, 2, 11))
-            .genre(Genre.ELECTRONIC)
-            .build();
 
     @Test
     @DisplayName("Returns list of all albums when GET instructions sent to /album end point")
@@ -118,6 +139,19 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").doesNotExist());
+    }
+
+    @Test
+    public void testAlbumManagerController_postAlbum_WithValidJSON() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.insertAlbum(menschMaschine)).thenReturn(menschMaschine);
+
+        this.mockMvcController.perform(
+                MockMvcRequestBuilders.post("/api/v1/album/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(menschMaschine)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+        verify(mockAlbumManagerServiceImpl, times(1)).insertAlbum(menschMaschine);
     }
 
 }

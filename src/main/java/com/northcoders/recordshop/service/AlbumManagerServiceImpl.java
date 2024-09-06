@@ -52,13 +52,13 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public void insertAlbum(Album album) {
-
+    public Album insertAlbum(Album album) {
+        return null;
     }
 
     @Override
-    public void updateAlbum(Long id, Album album) {
-
+    public Album updateAlbum(Long id, Album album) {
+        return null;
     }
 
     @Override

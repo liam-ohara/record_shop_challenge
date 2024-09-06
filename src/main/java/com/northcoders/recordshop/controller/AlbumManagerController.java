@@ -39,6 +39,11 @@ public class AlbumManagerController {
 
     }
 
+    @PostMapping
+    public ResponseEntity<Album> insertAlbum(@RequestBody Album album) {
+        albumManagerService.insertAlbum(album);
+        return new ResponseEntity<>(album, HttpStatus.CREATED);
+    }
 
 
 
