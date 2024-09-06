@@ -108,5 +108,16 @@ class AlbumManagerServiceImplTest {
                 () -> assertNull(thrown.getCause()));
     }
 
+    @Test
+    @DisplayName("Returns album that was posted when passed valid album object")
+    public void testAlbumManagerService_insertAlbum_WhenPassedValidAlbum() {
+
+        when(mockAlbumRepository.save(menschMaschine)).thenReturn(menschMaschine);
+
+        Album result = albumManagerServiceImpl.insertAlbum(menschMaschine);
+
+        assertEquals(menschMaschine, result);
+    }
+
 
 }

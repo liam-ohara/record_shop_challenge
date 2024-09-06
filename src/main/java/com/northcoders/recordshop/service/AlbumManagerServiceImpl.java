@@ -53,7 +53,8 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album insertAlbum(Album album) {
-        return null;
+        albumRepository.save(album);
+        return album;
     }
 
     @Override
