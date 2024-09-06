@@ -5,10 +5,7 @@ import com.northcoders.recordshop.model.Artist;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.model.Publisher;
 import com.northcoders.recordshop.repository.AlbumRepository;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -96,4 +93,18 @@ class AlbumManagerServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Returns null when passed an invalid album ID")
+    public void testAlbumManagerService_getAlbumById_WhenPassedInvalidId() {
+
+        when(mockAlbumRepository.findById(3L)).thenThrow(new NullPointerException("No album found with that id: 3"));
+
+        NullPointerException thrown = Assertions.assertThrows(NullPointerException.class, () -> {
+            albumManagerServiceImpl.getAlbumById(3L);
+        }, "NullPointerException was expected");
+
+        assertAll(
+                () -> assertEquals("No album found with that id: 3", thrown.getMessage()),
+                () -> assertNull(thrown.getCause()));
+    }
 }

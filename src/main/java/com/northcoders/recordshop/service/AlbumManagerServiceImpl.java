@@ -24,8 +24,11 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public Album getAlbumById(Long id) {
-        return albumRepository.findById(id).get();
+    public Album getAlbumById(Long id) throws NullPointerException {
+        if (albumRepository.findById(id).isPresent()) {
+            return albumRepository.findById(id).get();
+    }
+        throw new NullPointerException("No album found with that id: " + id);
     }
 
     @Override
