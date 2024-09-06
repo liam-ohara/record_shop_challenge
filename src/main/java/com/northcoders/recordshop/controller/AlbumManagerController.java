@@ -62,7 +62,9 @@ public class AlbumManagerController {
         try {
             if (updatedAlbum.getName() == null || updatedAlbum.getArtist() == null || updatedAlbum.getPublisher() == null || updatedAlbum.getReleaseDate() == null || updatedAlbum.getGenre() == null) {
                 throw new HttpMediaTypeNotAcceptableException("Malformed JSON.");
-            }
+            } else if (updatedAlbum.getReleaseDate().isAfter(LocalDate.now())) {
+                throw new HttpMediaTypeNotAcceptableException("Release date cannot be in the future.");
+            } else {
                 Album checkedAlbum = albumManagerService.getAlbumById(id);
                 if (checkedAlbum != null) {
                     Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
@@ -71,7 +73,8 @@ public class AlbumManagerController {
                     Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
                     return new ResponseEntity<>(putAlbum, HttpStatus.CREATED);
                 }
-                } catch(HttpMediaTypeNotAcceptableException e){
+            }
+        } catch(HttpMediaTypeNotAcceptableException e){
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
             }
         }
