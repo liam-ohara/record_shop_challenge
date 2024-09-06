@@ -36,6 +36,7 @@ class AlbumManagerServiceImplTest {
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
     Album invalidAlbumDate = new Album();
+    Album updatedAlbum = new Album();
 
     @BeforeEach
     public void setup() {
@@ -50,7 +51,7 @@ class AlbumManagerServiceImplTest {
                 .build();
 
         menschMaschine = Album.builder()
-                .albumId(1L)
+//                .albumId(1L)
                 .name("Die Mensch-Maschine")
                 .artist(kraftWerk)
                 .publisher(klingKlang)
@@ -72,6 +73,15 @@ class AlbumManagerServiceImplTest {
                 .artist(kraftWerk)
                 .publisher(klingKlang)
                 .releaseDate(LocalDate.of(2981, 2, 11))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        updatedAlbum = Album.builder()
+//                .albumId(1L)
+                .name("Electric Café")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1986, 11, 10))
                 .genre(Genre.ELECTRONIC)
                 .build();
     }
@@ -153,6 +163,20 @@ class AlbumManagerServiceImplTest {
         Album result = albumManagerServiceImpl.updateAlbum(menschMaschine.getAlbumId(), menschMaschine);
 
         assertEquals(menschMaschine, result);
+    }
+
+    //Refactor test to ensure not duplicates created
+
+    @Test
+    @DisplayName("Returns album that was posted when passed valid album object")
+    public void testAlbumManagerService_updateAlbum_WhenAlbumExists() {
+
+        when(mockAlbumRepository.findById(menschMaschine.getAlbumId())).thenReturn(Optional.ofNullable(menschMaschine));
+        albumManagerServiceImpl.insertAlbum(menschMaschine);
+
+        Album result = albumManagerServiceImpl.updateAlbum(1L, updatedAlbum);
+
+        assertEquals(updatedAlbum, result);
     }
 
 

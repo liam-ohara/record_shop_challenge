@@ -62,7 +62,17 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album updateAlbum(Long id, Album album) {
-        albumRepository.save(album);
+        Album currentAlbum = new Album();
+        if(albumRepository.findById(id).isPresent()) {
+            currentAlbum = albumRepository.findById(id).get();
+        }
+        if (id.equals(currentAlbum.getAlbumId())) {
+            albumRepository.deleteById(id);
+            albumRepository.save(album);
+        }
+        else {
+            albumRepository.save(album);
+        }
         return album;
     }
 
