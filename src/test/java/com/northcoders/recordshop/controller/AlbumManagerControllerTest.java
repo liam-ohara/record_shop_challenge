@@ -51,6 +51,7 @@ public class AlbumManagerControllerTest {
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
     Album invalidAlbumDate = new Album();
+    Album updatedAlbum = new Album();
 
     @BeforeEach
     public void setup() {
@@ -94,6 +95,15 @@ public class AlbumManagerControllerTest {
                 .artist(kraftWerk)
                 .publisher(klingKlang)
                 .releaseDate(LocalDate.of(2981, 2, 11))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        updatedAlbum = Album.builder()
+                .albumId(1L)
+                .name("Electric Café")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1986, 11, 10))
                 .genre(Genre.ELECTRONIC)
                 .build();
     }
@@ -201,12 +211,31 @@ public class AlbumManagerControllerTest {
         when(mockAlbumManagerServiceImpl.updateAlbum(menschMaschine.getAlbumId(), menschMaschine)).thenReturn(menschMaschine);
 
         this.mockMvcController.perform(
-                        MockMvcRequestBuilders.post("/api/v1/album/")
+                        MockMvcRequestBuilders.put("/api/v1/album/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(menschMaschine)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
+    }
+
+    @Test
+    @DisplayName("Returns JSON of album to be PUT and returns HTTP CREATED by passed valid JSON if album does not already exist.")
+    public void testAlbumManagerController_updateAlbum_WhenAlbumAlreadyExists() throws Exception{
+
+        when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
+
+        when(mockAlbumManagerServiceImpl.updateAlbum(updatedAlbum.getAlbumId(), updatedAlbum)).thenReturn(updatedAlbum);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.put("/api/v1/album/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(updatedAlbum)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Electric Café"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
     }
 
