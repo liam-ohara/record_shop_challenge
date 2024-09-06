@@ -59,17 +59,20 @@ public class AlbumManagerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Album> updateAlbum (@PathVariable("id") Long id, @RequestBody Album updatedAlbum) {
-        Album checkedAlbum = albumManagerService.getAlbumById(id);
-
-        if (checkedAlbum != null) {
-            Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
-            return new ResponseEntity<>(putAlbum, HttpStatus.OK);
-        } else {
-        Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
-        return new ResponseEntity<>(putAlbum, HttpStatus.CREATED);
+        try {
+            if (updatedAlbum.getName() == null || updatedAlbum.getArtist() == null || updatedAlbum.getPublisher() == null || updatedAlbum.getReleaseDate() == null || updatedAlbum.getGenre() == null) {
+                throw new HttpMediaTypeNotAcceptableException("Malformed JSON.");
+            }
+                Album checkedAlbum = albumManagerService.getAlbumById(id);
+                if (checkedAlbum != null) {
+                    Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
+                    return new ResponseEntity<>(putAlbum, HttpStatus.OK);
+                } else {
+                    Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
+                    return new ResponseEntity<>(putAlbum, HttpStatus.CREATED);
+                }
+                } catch(HttpMediaTypeNotAcceptableException e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            }
         }
-    }
-
-
-
 }

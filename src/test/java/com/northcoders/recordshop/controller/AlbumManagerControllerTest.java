@@ -239,6 +239,25 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
     }
 
+    @Test
+    @DisplayName("Returns 406 Not Acceptable error when invalid JSON submitted as part of PUT request")
+    public void testAlbumManagerController_updateAlbum_WithJSONMissingRequiredFields() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.updateAlbum(invalidAlbum.getAlbumId(), invalidAlbum)).thenReturn(invalidAlbum);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.put("/api/v1/album/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(invalidAlbum)))
+                .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").doesNotExist());
+
+    }
+
+
+
+
 
 
 }
