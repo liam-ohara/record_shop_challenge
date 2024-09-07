@@ -80,10 +80,17 @@ public class AlbumManagerController {
         }
     @DeleteMapping("/{id}")
     public ResponseEntity<Album> deleteAlbum (@PathVariable("id") Long id) {
-        Album albumForDeletion = albumManagerService.getAlbumById(id);
-        albumManagerService.deleteAlbum(id);
-        return new ResponseEntity<>(albumForDeletion, HttpStatus.OK);
+        Album albumForDeletion;
+        try {
+            albumForDeletion = albumManagerService.getAlbumById(id);
+            if (albumForDeletion == null) {
+                throw new RuntimeException();
+            }
+            albumManagerService.deleteAlbum(id);
+            return new ResponseEntity<>(albumForDeletion, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
-
 }
 

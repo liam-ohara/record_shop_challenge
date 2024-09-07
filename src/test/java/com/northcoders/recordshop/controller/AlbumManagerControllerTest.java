@@ -286,4 +286,18 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
 
     }
+
+    @Test
+    @DisplayName("Returns 404 NOT FOUND when album requested for deletion is not found.")
+    public void testAlbumManagerController_deleteAlbum_WhenAlbumIsNotFound() throws Exception {
+        when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(null);
+
+        when(mockAlbumManagerServiceImpl.deleteAlbum(menschMaschine.getAlbumId())).thenReturn(null);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/album/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
 }
