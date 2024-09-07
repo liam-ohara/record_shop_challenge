@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.*;
 
 @DataJpaTest
 class AlbumManagerServiceImplTest {
@@ -51,7 +52,7 @@ class AlbumManagerServiceImplTest {
                 .build();
 
         menschMaschine = Album.builder()
-//                .albumId(1L)
+                .albumId(1L)
                 .name("Die Mensch-Maschine")
                 .artist(kraftWerk)
                 .publisher(klingKlang)
@@ -177,6 +178,23 @@ class AlbumManagerServiceImplTest {
         Album result = albumManagerServiceImpl.updateAlbum(1L, updatedAlbum);
 
         assertEquals(updatedAlbum, result);
+    }
+
+    @Test
+    @DisplayName("Returns album that was deleted when passed a valid id")
+    public void testAlbumManagerService_deleteAlbum_WhenAlbumExists() {
+
+        when(mockAlbumRepository.findById(menschMaschine.getAlbumId())).thenReturn(Optional.ofNullable(menschMaschine));
+
+        albumManagerServiceImpl.deleteAlbum(1L);
+
+        Album result = albumManagerServiceImpl.deleteAlbum(1L);
+
+        verify(mockAlbumRepository, times(2)).findById(1L);
+        verify(mockAlbumRepository, times(2)).deleteById(1L);
+
+        assertEquals(menschMaschine, result);
+
     }
 
 

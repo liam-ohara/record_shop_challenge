@@ -78,7 +78,11 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album deleteAlbum(Long id) {
+        Album albumForDeletion = albumRepository.findById(id).get();
+        if (albumForDeletion.getAlbumId().equals(id)) {
+           albumRepository.deleteById(id);
+           return albumForDeletion;
+        }
         return null;
-
     }
 }
