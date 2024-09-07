@@ -77,7 +77,8 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public void deleteAlbum(Long id) {
+    public Album deleteAlbum(Long id) {
+        return null;
 
     }
 }

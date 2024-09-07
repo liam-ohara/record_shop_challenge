@@ -78,4 +78,12 @@ public class AlbumManagerController {
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
             }
         }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Album> deleteAlbum (@PathVariable("id") Long id) {
+        Album albumForDeletion = albumManagerService.getAlbumById(id);
+        albumManagerService.deleteAlbum(id);
+        return new ResponseEntity<>(albumForDeletion, HttpStatus.OK);
+    }
+
 }
+

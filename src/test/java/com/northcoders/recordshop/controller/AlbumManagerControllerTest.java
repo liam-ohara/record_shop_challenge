@@ -268,4 +268,22 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
                 .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    @DisplayName("Returns 200 OK when album requested for deletion is found and deleted successfully.")
+    public void testAlbumManagerController_deleteAlbum_WhenAlbumIsFound() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
+
+        when(mockAlbumManagerServiceImpl.deleteAlbum(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
+
+        this.mockMvcController.perform(
+                MockMvcRequestBuilders.delete("/api/v1/album/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
+
+    }
 }
