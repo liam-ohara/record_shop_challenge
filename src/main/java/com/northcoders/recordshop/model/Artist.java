@@ -13,7 +13,7 @@ import lombok.*;
 public class Artist {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue
     @Column (name = "artist_id")
     Long artistId;
 
