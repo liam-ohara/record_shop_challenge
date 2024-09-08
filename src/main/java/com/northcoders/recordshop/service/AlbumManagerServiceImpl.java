@@ -27,7 +27,7 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     public Album getAlbumById(Long id) throws NullPointerException {
         if (albumRepository.findById(id).isPresent()) {
             return albumRepository.findById(id).get();
-    }
+        }
         throw new NullPointerException("No album found with that id: " + id);
     }
 
@@ -63,26 +63,35 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     @Override
     public Album updateAlbum(Long id, Album album) {
         Album currentAlbum = new Album();
-        if(albumRepository.findById(id).isPresent()) {
+        if (albumRepository.findById(id).isPresent()) {
             currentAlbum = albumRepository.findById(id).get();
         }
         if (id.equals(currentAlbum.getAlbumId())) {
             albumRepository.deleteById(id);
             albumRepository.save(album);
-        }
-        else {
+        } else {
             albumRepository.save(album);
         }
         return album;
     }
 
     @Override
-    public Album deleteAlbum(Long id) {
-        Album albumForDeletion = albumRepository.findById(id).get();
-        if (albumForDeletion.getAlbumId().equals(id)) {
-           albumRepository.deleteById(id);
-           return albumForDeletion;
+    public Album deleteAlbum(Long id) throws NullPointerException {
+        Album albumForDeletion = new Album();
+
+        try {
+           albumForDeletion = albumRepository.findById(id).get();
+            if (albumForDeletion == null) {
+                throw new NullPointerException("No album found with that id: " + id);
+            }
+            if (albumForDeletion.getAlbumId().equals(id)) {
+                albumRepository.deleteById(id);
+                return albumForDeletion;
+            }
+        } catch (NullPointerException e) {
+            albumForDeletion = null;
         }
-        return null;
+
+        return albumForDeletion;
     }
 }

@@ -184,7 +184,7 @@ class AlbumManagerServiceImplTest {
     @DisplayName("Returns album that was deleted when passed a valid id")
     public void testAlbumManagerService_deleteAlbum_WhenAlbumExists() {
 
-        when(mockAlbumRepository.findById(menschMaschine.getAlbumId())).thenReturn(Optional.ofNullable(menschMaschine));
+        when(mockAlbumRepository.findById(1L)).thenReturn(Optional.ofNullable(menschMaschine));
 
         albumManagerServiceImpl.deleteAlbum(1L);
 
@@ -196,6 +196,28 @@ class AlbumManagerServiceImplTest {
         assertEquals(menschMaschine, result);
 
     }
+
+    @Test
+    @DisplayName("Returns null when passed an invalid id")
+    public void testAlbumManagerService_deleteAlbum_WhenAlbumDoesNotExist() {
+
+        when(mockAlbumRepository.findById(2L)).thenReturn(null);
+
+        NullPointerException thrown = Assertions.assertThrows(NullPointerException.class, () -> {
+            albumManagerServiceImpl.getAlbumById(2L);
+        }, "NullPointerException was expected");
+
+        albumManagerServiceImpl.deleteAlbum(2L);
+
+        Album result = albumManagerServiceImpl.deleteAlbum(2L);
+
+        verify(mockAlbumRepository, times(3)).findById(2L);
+        verify(mockAlbumRepository, times(0)).deleteById(2L);
+
+        assertNull(result);
+
+    }
+
 
 
 
