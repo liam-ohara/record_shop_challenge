@@ -112,7 +112,7 @@ public class AlbumManagerController {
             updatedAlbum.setGenre(checkedAlbum.getGenre());
         }
 
-        albumManagerService.updateAlbum(id, updatedAlbum);
+        albumManagerService.replaceAlbum(id, updatedAlbum);
         return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);
 
     }

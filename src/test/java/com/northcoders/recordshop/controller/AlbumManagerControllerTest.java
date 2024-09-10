@@ -305,7 +305,7 @@ public class AlbumManagerControllerTest {
     public void testAlbumManagerController_updateAlbum_WhenAlbumIsFound() throws Exception {
         when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
 
-        when(mockAlbumManagerServiceImpl.updateAlbum(updatedAlbum.getAlbumId(), updatedAlbum)).thenReturn(updatedAlbum);
+        when(mockAlbumManagerServiceImpl.replaceAlbum(updatedAlbum.getAlbumId(), updatedAlbum)).thenReturn(updatedAlbum);
 
         this.mockMvcController.perform(
                         MockMvcRequestBuilders.patch("/api/v1/album/1")
@@ -324,7 +324,7 @@ public class AlbumManagerControllerTest {
 
         when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(null);
 
-        when(mockAlbumManagerServiceImpl.updateAlbum((menschMaschine.getAlbumId()), null)).thenReturn(null);
+        when(mockAlbumManagerServiceImpl.replaceAlbum((menschMaschine.getAlbumId()), null)).thenReturn(null);
 
         this.mockMvcController.perform(
                         MockMvcRequestBuilders.patch("/api/v1/album/1")

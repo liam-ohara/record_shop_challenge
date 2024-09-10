@@ -23,7 +23,5 @@ public interface AlbumManagerService {
 
     Album replaceAlbum(Long id, Album album);
 
-    Album updateAlbum(Long id, Album album);
-
     Album deleteAlbum(Long id);
 }

@@ -204,7 +204,6 @@ class AlbumManagerServiceImplTest {
         assertEquals(menschMaschine, result);
     }
 
-    //Refactor test to ensure not duplicates created
 
     @Test
     @DisplayName("Returns album that was posted when passed valid album object")
@@ -255,10 +254,5 @@ class AlbumManagerServiceImplTest {
         assertNull(result);
 
     }
-
-
-
-
-
 
 }

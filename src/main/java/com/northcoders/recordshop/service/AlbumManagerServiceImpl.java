@@ -116,11 +116,6 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public Album updateAlbum(Long id, Album album) {
-        return album;
-    }
-
-    @Override
     public Album deleteAlbum(Long id) throws NullPointerException {
         Album albumForDeletion = new Album();
 
