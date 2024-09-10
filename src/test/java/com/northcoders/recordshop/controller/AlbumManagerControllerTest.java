@@ -318,4 +318,20 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
     }
 
+    @Test
+    @DisplayName("Returns 404 NOT FOUND when no album record with specified ID is found.")
+    public void testAlbumManagerController_updateAlbum_WhenAlbumIsNotFound() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(null);
+
+        when(mockAlbumManagerServiceImpl.updateAlbum((menschMaschine.getAlbumId()), null)).thenReturn(null);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.patch("/api/v1/album/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(menschMaschine)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
 }

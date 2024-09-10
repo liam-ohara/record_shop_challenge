@@ -80,7 +80,17 @@ public class AlbumManagerController {
         }
     @PatchMapping("/{id}")
     public ResponseEntity<Album> updateAlbum (@PathVariable("id") Long id, @RequestBody Album updatedAlbum) {
-        Album checkedAlbum = albumManagerService.getAlbumById(id);
+        Album checkedAlbum = new Album();
+
+        try {
+            if (albumManagerService.getAlbumById(id) == null) {
+                throw new NullPointerException();
+            }
+       } catch (NullPointerException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        checkedAlbum = albumManagerService.getAlbumById(id);
 
         if (updatedAlbum.getName().isBlank()) {
             updatedAlbum.setName(checkedAlbum.getName());
