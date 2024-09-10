@@ -28,11 +28,11 @@ public class Album {
     @Column
     String name;
 
-    @OneToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(referencedColumnName = "artist_id", nullable = false)
     Artist artist;
 
-    @OneToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(referencedColumnName = "publisher_id", nullable = false)
     Publisher publisher;
 

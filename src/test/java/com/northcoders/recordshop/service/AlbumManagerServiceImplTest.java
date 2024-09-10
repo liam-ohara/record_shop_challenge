@@ -5,6 +5,8 @@ import com.northcoders.recordshop.model.Artist;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.model.Publisher;
 import com.northcoders.recordshop.repository.AlbumRepository;
+import com.northcoders.recordshop.repository.ArtistRepository;
+import com.northcoders.recordshop.repository.PublisherRepository;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,18 +28,25 @@ class AlbumManagerServiceImplTest {
 
     @Mock
     private AlbumRepository mockAlbumRepository;
+    private ArtistRepository mockArtistRepository;
+    private PublisherRepository mockPublisherRepository;
 
     @InjectMocks
     private AlbumManagerServiceImpl albumManagerServiceImpl;
 
     List<Album> albumList = new ArrayList<>();
+    List<Artist> artistList = new ArrayList<>();
+    List<Publisher> publisherList = new ArrayList<>();
     Artist kraftWerk = new Artist();
     Publisher klingKlang = new Publisher();
+    Artist kraftWerkDuplicate = new Artist();
+    Publisher klingKlangDuplicate = new Publisher();
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
     Album invalidAlbumDate = new Album();
     Album updatedAlbum = new Album();
+    Album menschMaschineDuplicate = new Album();
 
     @BeforeEach
     public void setup() {
@@ -46,8 +55,15 @@ class AlbumManagerServiceImplTest {
                 .artistId(1L)
                 .name("Kraftwerk").build();
 
+        kraftWerkDuplicate = Artist.builder()
+                .name("Kraftwerk").build();
+
         klingKlang = Publisher.builder()
                 .publisherId(1L)
+                .name("Kling Klang")
+                .build();
+
+        klingKlangDuplicate = Publisher.builder()
                 .name("Kling Klang")
                 .build();
 
@@ -83,6 +99,14 @@ class AlbumManagerServiceImplTest {
                 .artist(kraftWerk)
                 .publisher(klingKlang)
                 .releaseDate(LocalDate.of(1986, 11, 10))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        menschMaschineDuplicate = Album.builder()
+                .name("Die Mensch-Maschine")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1978, 4, 28))
                 .genre(Genre.ELECTRONIC)
                 .build();
     }
@@ -138,6 +162,23 @@ class AlbumManagerServiceImplTest {
         Album result = albumManagerServiceImpl.insertAlbum(menschMaschine);
 
         assertEquals(menschMaschine, result);
+    }
+
+    @Test
+    @DisplayName("")
+    public void testAlbumManagerService_insertAlbum_WhenPassedDuplicateAlbum() {
+
+
+        when(mockAlbumRepository.save(menschMaschine)).thenReturn(menschMaschine);
+        albumManagerServiceImpl.insertAlbum(menschMaschine);
+        when(mockAlbumRepository.save(menschMaschineDuplicate)).thenReturn(menschMaschineDuplicate);
+
+        Album result = albumManagerServiceImpl.insertAlbum(menschMaschineDuplicate);
+
+        assertAll(
+                () -> assertEquals(1L, result.getArtist().getArtistId()),
+                () -> assertEquals(1L, result.getPublisher().getPublisherId()));
+
     }
 
     @Test
