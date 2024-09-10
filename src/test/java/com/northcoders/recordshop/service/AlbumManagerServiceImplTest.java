@@ -11,8 +11,6 @@ import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
 @DataJpaTest
@@ -198,11 +195,11 @@ class AlbumManagerServiceImplTest {
 
     @Test
     @DisplayName("Returns album that was posted when passed valid album object")
-    public void testAlbumManagerService_updateAlbum_WhenAlbumDoesNotExist() {
+    public void testAlbumManagerService_replaceAlbum_WhenAlbumDoesNotExist() {
 
         when(mockAlbumRepository.save(menschMaschine)).thenReturn(menschMaschine);
 
-        Album result = albumManagerServiceImpl.updateAlbum(menschMaschine.getAlbumId(), menschMaschine);
+        Album result = albumManagerServiceImpl.replaceAlbum(menschMaschine.getAlbumId(), menschMaschine);
 
         assertEquals(menschMaschine, result);
     }
@@ -211,12 +208,12 @@ class AlbumManagerServiceImplTest {
 
     @Test
     @DisplayName("Returns album that was posted when passed valid album object")
-    public void testAlbumManagerService_updateAlbum_WhenAlbumExists() {
+    public void testAlbumManagerService_replaceAlbum_WhenAlbumExists() {
 
         when(mockAlbumRepository.findById(menschMaschine.getAlbumId())).thenReturn(Optional.ofNullable(menschMaschine));
         albumManagerServiceImpl.insertAlbum(menschMaschine);
 
-        Album result = albumManagerServiceImpl.updateAlbum(1L, updatedAlbum);
+        Album result = albumManagerServiceImpl.replaceAlbum(1L, updatedAlbum);
 
         assertEquals(updatedAlbum, result);
     }

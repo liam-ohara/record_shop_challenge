@@ -7,7 +7,6 @@ import com.northcoders.recordshop.model.Artist;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.model.Publisher;
 import com.northcoders.recordshop.service.AlbumManagerServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -207,8 +206,8 @@ public class AlbumManagerControllerTest {
 
     @Test
     @DisplayName("Returns JSON of album to be PUT and returns HTTP CREATED by passed valid JSON if album does not already exist.")
-    public void testAlbumManagerController_updateAlbum_WhenAlbumDoesNotExist() throws Exception{
-        when(mockAlbumManagerServiceImpl.updateAlbum(menschMaschine.getAlbumId(), menschMaschine)).thenReturn(menschMaschine);
+    public void testAlbumManagerController_replaceAlbum_WhenAlbumDoesNotExist() throws Exception{
+        when(mockAlbumManagerServiceImpl.replaceAlbum(menschMaschine.getAlbumId(), menschMaschine)).thenReturn(menschMaschine);
 
         this.mockMvcController.perform(
                         MockMvcRequestBuilders.put("/api/v1/album/1")
@@ -222,11 +221,11 @@ public class AlbumManagerControllerTest {
 
     @Test
     @DisplayName("Returns JSON of album to be PUT and returns HTTP CREATED by passed valid JSON if album does not already exist.")
-    public void testAlbumManagerController_updateAlbum_WhenAlbumAlreadyExists() throws Exception{
+    public void testAlbumManagerController_replaceAlbum_WhenAlbumAlreadyExists() throws Exception{
 
         when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
 
-        when(mockAlbumManagerServiceImpl.updateAlbum(updatedAlbum.getAlbumId(), updatedAlbum)).thenReturn(updatedAlbum);
+        when(mockAlbumManagerServiceImpl.replaceAlbum(updatedAlbum.getAlbumId(), updatedAlbum)).thenReturn(updatedAlbum);
 
         this.mockMvcController.perform(
                         MockMvcRequestBuilders.put("/api/v1/album/1")
@@ -241,9 +240,9 @@ public class AlbumManagerControllerTest {
 
     @Test
     @DisplayName("Returns 406 Not Acceptable error when invalid JSON submitted as part of PUT request")
-    public void testAlbumManagerController_updateAlbum_WithJSONMissingRequiredFields() throws Exception {
+    public void testAlbumManagerController_replaceAlbum_WithJSONMissingRequiredFields() throws Exception {
 
-        when(mockAlbumManagerServiceImpl.updateAlbum(invalidAlbum.getAlbumId(), invalidAlbum)).thenReturn(invalidAlbum);
+        when(mockAlbumManagerServiceImpl.replaceAlbum(invalidAlbum.getAlbumId(), invalidAlbum)).thenReturn(invalidAlbum);
 
         this.mockMvcController.perform(
                         MockMvcRequestBuilders.put("/api/v1/album/1")
@@ -257,9 +256,9 @@ public class AlbumManagerControllerTest {
 
     @Test
     @DisplayName("Returns 406 Not Acceptable error when JSON with invalid release date submitted as part of POST request")
-    public void testAlbumManagerController_updateAlbum_WithInvalidReleaseData() throws Exception {
+    public void testAlbumManagerController_replaceAlbum_WithInvalidReleaseData() throws Exception {
 
-        when(mockAlbumManagerServiceImpl.updateAlbum(invalidAlbumDate.getAlbumId(), invalidAlbumDate)).thenReturn(invalidAlbumDate);
+        when(mockAlbumManagerServiceImpl.replaceAlbum(invalidAlbumDate.getAlbumId(), invalidAlbumDate)).thenReturn(invalidAlbumDate);
 
         this.mockMvcController.perform(
                         MockMvcRequestBuilders.put("/api/v1/album/1")
@@ -298,6 +297,25 @@ public class AlbumManagerControllerTest {
                         MockMvcRequestBuilders.delete("/api/v1/album/1"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    //Tests for updateAlbum for PATCH endpoint
+    @Test
+    @DisplayName("Returns 200 OK with JSON of updated album record when album with specified ID is found")
+    public void testAlbumManagerController_updateAlbum_WhenAlbumIsFound() throws Exception {
+        when(mockAlbumManagerServiceImpl.getAlbumById(menschMaschine.getAlbumId())).thenReturn(menschMaschine);
+
+        when(mockAlbumManagerServiceImpl.updateAlbum(updatedAlbum.getAlbumId(), updatedAlbum)).thenReturn(updatedAlbum);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.patch("/api/v1/album/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(updatedAlbum)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Electric Café"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.ELECTRONIC.toString()));
     }
 
 }

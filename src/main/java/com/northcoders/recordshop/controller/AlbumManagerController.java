@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.PutExchange;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -58,27 +57,58 @@ public class AlbumManagerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Album> updateAlbum (@PathVariable("id") Long id, @RequestBody Album updatedAlbum) {
+    public ResponseEntity<Album> replaceAlbum (@PathVariable("id") Long id, @RequestBody Album replacingAlbum) {
         try {
-            if (updatedAlbum.getName() == null || updatedAlbum.getArtist() == null || updatedAlbum.getPublisher() == null || updatedAlbum.getReleaseDate() == null || updatedAlbum.getGenre() == null) {
+            if (replacingAlbum.getName() == null || replacingAlbum.getArtist() == null || replacingAlbum.getPublisher() == null || replacingAlbum.getReleaseDate() == null || replacingAlbum.getGenre() == null) {
                 throw new HttpMediaTypeNotAcceptableException("Malformed JSON.");
-            } else if (updatedAlbum.getReleaseDate().isAfter(LocalDate.now())) {
+            } else if (replacingAlbum.getReleaseDate().isAfter(LocalDate.now())) {
                 throw new HttpMediaTypeNotAcceptableException("Release date cannot be in the future.");
             } else {
                 Album checkedAlbum = albumManagerService.getAlbumById(id);
                 if (checkedAlbum != null) {
-                    Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
+                    Album putAlbum = albumManagerService.replaceAlbum(id, replacingAlbum);
                     return new ResponseEntity<>(putAlbum, HttpStatus.OK);
                 } else {
-                    Album putAlbum = albumManagerService.updateAlbum(id, updatedAlbum);
+                    Album putAlbum = albumManagerService.replaceAlbum(id, replacingAlbum);
                     return new ResponseEntity<>(putAlbum, HttpStatus.CREATED);
                 }
             }
         } catch(HttpMediaTypeNotAcceptableException e){
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
             }
+
         }
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
+    public ResponseEntity<Album> updateAlbum (@PathVariable("id") Long id, @RequestBody Album updatedAlbum) {
+        Album checkedAlbum = albumManagerService.getAlbumById(id);
+
+        if (updatedAlbum.getName().isBlank()) {
+            updatedAlbum.setName(checkedAlbum.getName());
+        }
+
+        if (updatedAlbum.getArtist().getName().isBlank()) {
+            updatedAlbum.setArtist(checkedAlbum.getArtist());
+        }
+
+        if (updatedAlbum.getPublisher().getName().isBlank()) {
+            updatedAlbum.setPublisher(checkedAlbum.getPublisher());
+        }
+
+        if (updatedAlbum.getReleaseDate() == null) {
+            updatedAlbum.setReleaseDate(checkedAlbum.getReleaseDate());
+        }
+
+        if (updatedAlbum.getGenre() == null) {
+            updatedAlbum.setGenre(checkedAlbum.getGenre());
+        }
+
+        albumManagerService.updateAlbum(id, updatedAlbum);
+        return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);
+
+    }
+
+        @DeleteMapping("/{id}")
+
     public ResponseEntity<Album> deleteAlbum (@PathVariable("id") Long id) {
         Album albumForDeletion;
         try {

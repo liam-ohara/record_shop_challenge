@@ -101,7 +101,7 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public Album updateAlbum(Long id, Album album) {
+    public Album replaceAlbum(Long id, Album album) {
         Album currentAlbum = new Album();
         if (albumRepository.findById(id).isPresent()) {
             currentAlbum = albumRepository.findById(id).get();
@@ -112,6 +112,11 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         } else {
             albumRepository.save(album);
         }
+        return album;
+    }
+
+    @Override
+    public Album updateAlbum(Long id, Album album) {
         return album;
     }
 
