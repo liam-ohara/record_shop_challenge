@@ -353,6 +353,17 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].albumId").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Computerwelt"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].genre").value(Genre.ELECTRONIC.toString()));
+    }
+
+    @Test
+    @DisplayName("Returns 404 NOT FOUND when no albums have matches to passed artist name")
+    public void testAlbumManagerController_getAlbumByArtistName_WhenNoMatchesFound() throws Exception {
+
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/artist/Kraftwerk"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
 
     }
 

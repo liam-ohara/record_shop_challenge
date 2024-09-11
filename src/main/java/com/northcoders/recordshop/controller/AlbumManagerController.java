@@ -10,6 +10,7 @@ import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -41,9 +42,16 @@ public class AlbumManagerController {
 
     @GetMapping("/artist/{artistName}")
     public ResponseEntity<List<Album>> getAlbumByArtistName (@PathVariable ("artistName") String artistName) {
-        List<Album> albumList = albumManagerService.getAllAlbumsByArtist(artistName);
-        return new ResponseEntity<>(albumList, HttpStatus.OK);
-//        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        List<Album> albumList = new ArrayList<>();
+        try {
+            albumList= albumManagerService.getAllAlbumsByArtist(artistName);
+            if (albumList.isEmpty()) {
+                throw new RuntimeException();
+            }
+            return new ResponseEntity<>(albumList, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(albumList, HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
