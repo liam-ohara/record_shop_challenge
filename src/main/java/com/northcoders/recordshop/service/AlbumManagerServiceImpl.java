@@ -43,10 +43,25 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public List<Album> getAllAlbumsByArtist(String artistName) {
-        Artist artistSearchedFor = artistRepository.findArtistByName(artistName);
+        List<Album> listOfMatchingAlbums = new ArrayList<>();
+        Artist artistSearchedFor = new Artist();
 
-        List<Album> listOfMatchingAlbums = albumRepository.findAlbumsByArtistArtistId(artistSearchedFor.getArtistId());
+        try {
+            if (artistRepository.findArtistByName(artistName) != null) {
+                artistSearchedFor = artistRepository.findArtistByName(artistName);
+            }
+        } catch (NullPointerException e) {
+            return listOfMatchingAlbums;
+        }
 
+        try {
+            if (albumRepository.findAlbumsByArtistArtistId(artistSearchedFor.getArtistId()) != null) {
+                listOfMatchingAlbums = albumRepository.findAlbumsByArtistArtistId(artistSearchedFor.getArtistId());
+                return listOfMatchingAlbums;
+            }
+        } catch (NullPointerException e) {
+           listOfMatchingAlbums = null;
+        }
         return listOfMatchingAlbums;
     }
 
