@@ -99,20 +99,88 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         albumRepository.save(album);
         return album;
     }
-
+//Refactor to include some of logical from above - as incoming album does not contain
+    // Artist or Publisher ID.
     @Override
-    public Album replaceAlbum(Long id, Album album) {
-        Album currentAlbum = new Album();
+    public Album replaceAlbum(Long id, Album replacingAlbum) {
+        Album checkedAlbum = new Album();
         if (albumRepository.findById(id).isPresent()) {
-            currentAlbum = albumRepository.findById(id).get();
+            checkedAlbum = albumRepository.findById(id).get();
         }
-        if (id.equals(currentAlbum.getAlbumId())) {
-            albumRepository.deleteById(id);
-            albumRepository.save(album);
+        if (id.equals(checkedAlbum.getAlbumId())) {
+            replacingAlbum.setAlbumId(checkedAlbum.getAlbumId());
+
+            try {
+                if (replacingAlbum.getName() == null || replacingAlbum.getName().isBlank()) {
+                    replacingAlbum.setName(checkedAlbum.getName());
+                }
+            } catch (NullPointerException e) {
+                replacingAlbum.setName(checkedAlbum.getName());
+            }
+
+            try {
+                if (replacingAlbum.getArtist().getName() == null || replacingAlbum.getArtist().getName().isBlank()) {
+                    replacingAlbum.setArtist(checkedAlbum.getArtist());
+                }
+            } catch (NullPointerException e) {
+                replacingAlbum.setArtist(checkedAlbum.getArtist());
+            }
+
+            try {
+                if (replacingAlbum.getPublisher().getName() == null || replacingAlbum.getPublisher().getName().isBlank()) {
+                    replacingAlbum.setPublisher(checkedAlbum.getPublisher());
+                }
+            } catch (NullPointerException e) {
+                replacingAlbum.setPublisher(checkedAlbum.getPublisher());
+            }
+
+            try {
+                if (replacingAlbum.getReleaseDate() == null) {
+                    replacingAlbum.setReleaseDate(checkedAlbum.getReleaseDate());
+                }
+            } catch (NullPointerException e) {
+                replacingAlbum.setReleaseDate(checkedAlbum.getReleaseDate());
+            }
+
+            try {
+                if (replacingAlbum.getGenre() == null) {
+                    replacingAlbum.setGenre(checkedAlbum.getGenre());
+                }
+            } catch (NullPointerException e) {
+                replacingAlbum.setGenre(checkedAlbum.getGenre());
+            }
+
+            List<Artist> artistList = new ArrayList<>();
+            artistRepository.findAll().forEach(artistList::add);
+            List<Publisher> publisherList = new ArrayList<>();
+            publisherRepository.findAll().forEach(publisherList::add);
+
+            if (replacingAlbum.getArtist().getArtistId() == null) {
+                for (int i = 0; i < artistList.size(); i++) {
+                    if (artistList.get(i).getName().equals(replacingAlbum.getArtist().getName())) {
+                        replacingAlbum.setArtist(artistList.get(i));
+                    }
+                }
+            } else {
+                artistRepository.save(replacingAlbum.getArtist());
+            }
+
+            if (replacingAlbum.getPublisher().getPublisherId() == null) {
+                for (int j = 0; j < artistList.size(); j++) {
+                    if (publisherList.get(j).getName().equals(replacingAlbum.getPublisher().getName())) {
+                        replacingAlbum.setPublisher(publisherList.get(j));
+                    }
+                }
+            } else {
+                publisherRepository.save(replacingAlbum.getPublisher());
+            }
+            albumRepository.save(replacingAlbum);
         } else {
-            albumRepository.save(album);
+            artistRepository.save(replacingAlbum.getArtist());
+            publisherRepository.save(replacingAlbum.getPublisher());
+            albumRepository.save(replacingAlbum);
         }
-        return album;
+        return replacingAlbum;
     }
 
     @Override

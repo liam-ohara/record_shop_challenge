@@ -90,28 +90,6 @@ public class AlbumManagerController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        checkedAlbum = albumManagerService.getAlbumById(id);
-
-        if (updatedAlbum.getName().isBlank()) {
-            updatedAlbum.setName(checkedAlbum.getName());
-        }
-
-        if (updatedAlbum.getArtist().getName().isBlank()) {
-            updatedAlbum.setArtist(checkedAlbum.getArtist());
-        }
-
-        if (updatedAlbum.getPublisher().getName().isBlank()) {
-            updatedAlbum.setPublisher(checkedAlbum.getPublisher());
-        }
-
-        if (updatedAlbum.getReleaseDate() == null) {
-            updatedAlbum.setReleaseDate(checkedAlbum.getReleaseDate());
-        }
-
-        if (updatedAlbum.getGenre() == null) {
-            updatedAlbum.setGenre(checkedAlbum.getGenre());
-        }
-
         albumManagerService.replaceAlbum(id, updatedAlbum);
         return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);
 

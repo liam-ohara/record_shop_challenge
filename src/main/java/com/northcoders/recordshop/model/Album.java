@@ -29,10 +29,12 @@ public class Album {
     String name;
 
     @ManyToOne
+            //(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(referencedColumnName = "artist_id", nullable = false)
     Artist artist;
 
     @ManyToOne
+            //(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(referencedColumnName = "publisher_id", nullable = false)
     Publisher publisher;
 
