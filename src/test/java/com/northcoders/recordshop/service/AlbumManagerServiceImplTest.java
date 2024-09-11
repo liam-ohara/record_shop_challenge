@@ -25,7 +25,11 @@ class AlbumManagerServiceImplTest {
 
     @Mock
     private AlbumRepository mockAlbumRepository;
+
+    @Mock
     private ArtistRepository mockArtistRepository;
+
+    @Mock
     private PublisherRepository mockPublisherRepository;
 
     @InjectMocks
@@ -252,7 +256,24 @@ class AlbumManagerServiceImplTest {
         verify(mockAlbumRepository, times(0)).deleteById(2L);
 
         assertNull(result);
+    }
+
+    @Test
+    @DisplayName("")
+    public void testAlbumManagerService_getAllAlbumsByArtist_WhenPassedArtistNameMatchingAlbums() {
+
+        artistList.add(kraftWerk);
+        albumList.add(menschMaschine);
+        albumList.add(computerWelt);
+
+        when(mockArtistRepository.findArtistByName("Kraftwerk")).thenReturn(kraftWerk);
+        when(mockAlbumRepository.findAlbumsByArtistArtistId(kraftWerk.getArtistId())).thenReturn(albumList);
+
+        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk");
+
+        assertEquals(albumList, actualResults);
 
     }
+
 
 }

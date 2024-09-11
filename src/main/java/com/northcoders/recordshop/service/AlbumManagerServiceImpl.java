@@ -43,7 +43,11 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public List<Album> getAllAlbumsByArtist(String artistName) {
-        return null;
+        Artist artistSearchedFor = artistRepository.findArtistByName(artistName);
+
+        List<Album> listOfMatchingAlbums = albumRepository.findAlbumsByArtistArtistId(artistSearchedFor.getArtistId());
+
+        return listOfMatchingAlbums;
     }
 
     @Override
