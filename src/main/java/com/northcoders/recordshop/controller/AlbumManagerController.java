@@ -39,6 +39,13 @@ public class AlbumManagerController {
         }
     }
 
+    @GetMapping("/artist/{artistName}")
+    public ResponseEntity<List<Album>> getAlbumByArtistName (@PathVariable ("artistName") String artistName) {
+        List<Album> albumList = albumManagerService.getAllAlbumsByArtist(artistName);
+        return new ResponseEntity<>(albumList, HttpStatus.OK);
+//        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping
     public ResponseEntity<Album> insertAlbum(@RequestBody Album album) {
         try {

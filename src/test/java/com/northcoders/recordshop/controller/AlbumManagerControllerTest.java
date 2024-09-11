@@ -334,4 +334,26 @@ public class AlbumManagerControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    @DisplayName("Returns 200 OK and list of albums when matches to artist name is found")
+    public void testAlbumManagerController_getAlbumByArtistName_WhenMatchFound() throws Exception {
+
+        albumList.add(menschMaschine);
+        albumList.add(computerWelt);
+
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/artist/Kraftwerk"))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].albumId").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Computerwelt"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].genre").value(Genre.ELECTRONIC.toString()));
+
+    }
+
 }
