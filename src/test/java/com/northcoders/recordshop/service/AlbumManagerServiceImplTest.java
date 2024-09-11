@@ -266,7 +266,7 @@ class AlbumManagerServiceImplTest {
         albumList.add(menschMaschine);
         albumList.add(computerWelt);
 
-        when(mockArtistRepository.findArtistByName("Kraftwerk")).thenReturn(kraftWerk);
+        when(mockArtistRepository.findArtistByNameIgnoreCase("Kraftwerk")).thenReturn(kraftWerk);
         when(mockAlbumRepository.findAlbumsByArtistArtistId(kraftWerk.getArtistId())).thenReturn(albumList);
 
         List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk");
@@ -278,7 +278,7 @@ class AlbumManagerServiceImplTest {
     @Test
     @DisplayName("Returns empty list of albums when no album matches for artist found")
     public void testAlbumManagerService_getAllAlbumsByArtist_WhenPassedArtistNameMatchingNoAlbums() {
-        when(mockArtistRepository.findArtistByName("Unknown artist")).thenReturn(null);
+        when(mockArtistRepository.findArtistByNameIgnoreCase("Unknown artist")).thenReturn(null);
         when(mockAlbumRepository.findAlbumsByArtistArtistId(null)).thenReturn(albumList);
 
         List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByArtist("Unknown artist");
@@ -286,6 +286,5 @@ class AlbumManagerServiceImplTest {
         assertEquals(albumList, actualResults);
 
     }
-
 
 }

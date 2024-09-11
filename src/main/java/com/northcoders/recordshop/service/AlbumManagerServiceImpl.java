@@ -47,8 +47,8 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         Artist artistSearchedFor = new Artist();
 
         try {
-            if (artistRepository.findArtistByName(artistName) != null) {
-                artistSearchedFor = artistRepository.findArtistByName(artistName);
+            if (artistRepository.findArtistByNameIgnoreCase(artistName) != null) {
+                artistSearchedFor = artistRepository.findArtistByNameIgnoreCase(artistName);
             }
         } catch (NullPointerException e) {
             return listOfMatchingAlbums;
