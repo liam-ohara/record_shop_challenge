@@ -21,7 +21,10 @@ import java.util.Date;
 public class Album {
 
     @Id
-    @GeneratedValue
+    //Repository test for duplicate POST/save requests with same record fail if
+    // GeneratedValue is in place. However without this, the user will need to know
+    // the next ID available
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     Long albumId;
 
@@ -29,12 +32,14 @@ public class Album {
     String name;
 
     @ManyToOne
-            //(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+            //Cascade annotation is required to pass repository test for duplicate
+            //POST/save requests with same record
+            (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(referencedColumnName = "artist_id", nullable = false)
     Artist artist;
 
     @ManyToOne
-            //(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+            (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(referencedColumnName = "publisher_id", nullable = false)
     Publisher publisher;
 

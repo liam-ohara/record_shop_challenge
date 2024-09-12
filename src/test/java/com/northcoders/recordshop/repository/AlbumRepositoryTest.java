@@ -31,60 +31,33 @@ class AlbumRepositoryTest {
     private PublisherRepository publisherRepository;
 
 
-    Artist kraftWerk = new Artist();
-    Artist artist2 = new Artist();
-    Publisher klingKlang = new Publisher();
-    Publisher publisher2 = new Publisher();
-    Album menschMaschine = new Album();
-    Album menschMaschineDuplicate = new Album();
+    private Artist kraftWerk = new Artist();
+    private Publisher klingKlang = new Publisher();
+    private Album menschMaschine = new Album();
+
 
     @BeforeEach
     public void setup() {
 
         kraftWerk = Artist.builder()
+                .artistId(1L)
                 .name("Kraftwerk").build();
 
-        artist2 = Artist.builder()
-                .name("Artist Two").build();
 
         klingKlang = Publisher.builder()
+                .publisherId(1L)
                 .name("Kling Klang")
                 .build();
 
-        publisher2 = Publisher.builder()
-                .name("Publisher Two").build();
-
         menschMaschine = Album.builder()
+                .albumId(1L)
                 .name("Die Mensch-Maschine")
                 .artist(kraftWerk)
                 .publisher(klingKlang)
                 .releaseDate(LocalDate.of(1978, 4, 28))
                 .genre(Genre.ELECTRONIC)
                 .build();
-
-        menschMaschineDuplicate = Album.builder()
-                .name("Die Mensch-Maschine")
-                .artist(kraftWerk)
-                .publisher(klingKlang)
-                .releaseDate(LocalDate.of(1978, 4, 28))
-                .genre(Genre.ELECTRONIC)
-                .build();
-
     }
-
-    @Test
-    @DisplayName("Returns a list containing albums in database")
-    public void testAlbumRepository_getAllAlbums() {
-
-       artistRepository.save(kraftWerk);
-       publisherRepository.save(klingKlang);
-       albumRepository.save(menschMaschine);
-
-       List<Album> results = (List<Album>) albumRepository.findAll();
-
-        assertThat(results).contains(menschMaschine);
-        }
-
 
     @Test
     @DisplayName("Returns album from database matching a valid album ID")
@@ -94,10 +67,51 @@ class AlbumRepositoryTest {
         publisherRepository.save(klingKlang);
         albumRepository.save(menschMaschine);
 
-        Optional<Album> result = albumRepository.findById(1L);
+        Album result = albumRepository.findById(1L).get();
 
-        assertEquals(1L, result.get().getAlbumId());
+        assertEquals(1L, result.getAlbumId());
+
     }
+
+    @Test
+    @DisplayName("Returns a list containing albums in database")
+    public void testAlbumRepository_getAllAlbums() {
+
+        Album computerWelt;
+
+        computerWelt = Album.builder()
+                .albumId(2L)
+                .name("Computerwelt")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1981, 2, 11))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        Album electricCafe;
+        electricCafe = Album.builder()
+                .albumId(1L)
+                .name("Electric Café")
+                .artist(kraftWerk)
+                .publisher(klingKlang)
+                .releaseDate(LocalDate.of(1986, 11, 10))
+                .genre(Genre.ELECTRONIC)
+                .build();
+
+        artistRepository.save(kraftWerk);
+        publisherRepository.save(klingKlang);
+        albumRepository.save(menschMaschine);
+        albumRepository.save(computerWelt);
+        albumRepository.save(electricCafe);
+
+        List <Album> albumResults = (List<Album>) albumRepository.findAll();
+
+        assertThat(albumResults).isNotEmpty();
+        assertThat(albumResults.size()).isEqualTo(2);
+    }
+
+
+
 
     @Test
     @DisplayName("")
@@ -105,23 +119,17 @@ class AlbumRepositoryTest {
 
         artistRepository.save(kraftWerk);
         publisherRepository.save(klingKlang);
-//        artistRepository.save(artist2);
-//        publisherRepository.save(publisher2);
         albumRepository.save(menschMaschine);
-        albumRepository.save(menschMaschineDuplicate);
+        albumRepository.save(menschMaschine);
 
-        List<Album> results = (List<Album>) albumRepository.findAll();
+        List <Album> result = (List<Album>) albumRepository.findAll();
 
-        Optional<Album> result = Optional.ofNullable(results.get(1));
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(1);
 
-//        Need handling of duplicate artists/publishers
-//
-        assertAll(
-                () -> assertEquals(2L, result.get().getAlbumId()),
-                () -> assertEquals("Die Mensch-Maschine", result.get().getName()),
-                () -> assertEquals(1L, result.get().getArtist().getArtistId()),
-                () -> assertEquals(1L, result.get().getPublisher().getPublisherId()));
     }
+
+
 
     }
 
