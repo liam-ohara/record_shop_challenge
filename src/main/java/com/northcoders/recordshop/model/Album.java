@@ -21,10 +21,7 @@ import java.util.Date;
 public class Album {
 
     @Id
-    //Repository test for duplicate POST/save requests with same record fail if
-    // GeneratedValue is in place. However without this, the user will need to know
-    // the next ID available
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     Long albumId;
 
