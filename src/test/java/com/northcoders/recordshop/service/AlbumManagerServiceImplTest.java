@@ -301,6 +301,16 @@ class AlbumManagerServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Returns empty list of albums when no matches found for release year.")
+    public void testAlbumManagerService_getAllAlbumsByReleaseYear_WhenPassedYearMatchesNoAlbums() {
 
+        when(mockAlbumRepository.findAlbumsByReleaseDateBetween(LocalDate.of(1979, 1, 1), LocalDate.of(1980, 1, 1))).thenReturn(albumList);
+
+        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByReleaseYear(1979);
+
+        assertEquals(albumList, actualResults);
+
+    }
 
 }
