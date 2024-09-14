@@ -368,8 +368,8 @@ public class AlbumManagerControllerTest {
     }
 
     @Test
-    @DisplayName("Returns 200 OK and a list of albums when matches to release year is found")
-    public void testAlbumManagerController_getAlbumByReleaseYear_WhenMatchFound() throws Exception {
+    @DisplayName("Returns 200 OK and a list of albums when matches to release year are found")
+    public void testAlbumManagerController_getAlbumsByReleaseYear_WhenMatchFound() throws Exception {
 
         albumList.add(menschMaschine);
 
@@ -386,7 +386,7 @@ public class AlbumManagerControllerTest {
 
     @Test
     @DisplayName("Returns 404 NOT FOUND when no albums have matches to passed artist name")
-    public void testAlbumManagerController_getAlbumByReleaseYear_WhenNoMatchesFound() throws Exception {
+    public void testAlbumManagerController_getAlbumsByReleaseYear_WhenNoMatchesFound() throws Exception {
 
         when(mockAlbumManagerServiceImpl.getAllAlbumsByReleaseYear(1980)).thenReturn(albumList);
 
@@ -394,6 +394,27 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    @DisplayName("Returns 200 OK and a list of albums when matches to genre are found")
+    public void testAlbumManagerController_getAlbumByGenre_WhenMatchFound() throws Exception {
+
+        albumList.add(menschMaschine);
+        albumList.add(computerWelt);
+
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByGenre("electronic")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/genre/electronic"))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].albumId").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Computerwelt"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].genre").value(Genre.ELECTRONIC.toString()));
     }
 
 }

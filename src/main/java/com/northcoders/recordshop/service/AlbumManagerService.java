@@ -15,7 +15,7 @@ public interface AlbumManagerService {
 
     List<Album> getAllAlbumsByReleaseYear(int year);
 
-    List<Album> getAllAlbumsByGenre(Genre genre);
+    List<Album> getAllAlbumsByGenre(String genre);
 
     Album getAlbumByAlbumName(String albumName);
 

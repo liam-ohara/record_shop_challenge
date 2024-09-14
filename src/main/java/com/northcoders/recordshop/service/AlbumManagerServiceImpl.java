@@ -78,7 +78,7 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByGenre(Genre genre) {
+    public List<Album> getAllAlbumsByGenre(String genre) {
         return null;
     }
 
