@@ -10,6 +10,7 @@ import com.northcoders.recordshop.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,13 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public List<Album> getAllAlbumsByReleaseYear(int year) {
-        return null;
+        List<Album> listOfMatchingAlbums;
+        LocalDate startDate = LocalDate.of(year, 1, 1);;
+        LocalDate endDate = LocalDate.of(year + 1, 1 , 1);
+
+        listOfMatchingAlbums = albumRepository.findAlbumsByReleaseDateBetween(startDate, endDate);
+        return listOfMatchingAlbums;
+
     }
 
     @Override
