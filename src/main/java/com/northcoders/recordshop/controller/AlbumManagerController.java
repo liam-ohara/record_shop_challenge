@@ -44,7 +44,7 @@ public class AlbumManagerController {
     public ResponseEntity<List<Album>> getAlbumByArtistName (@PathVariable ("artistName") String artistName) {
         List<Album> albumList = new ArrayList<>();
         try {
-            albumList= albumManagerService.getAllAlbumsByArtist(artistName);
+            albumList = albumManagerService.getAllAlbumsByArtist(artistName);
             if (albumList.isEmpty()) {
                 throw new RuntimeException();
             }
@@ -56,8 +56,17 @@ public class AlbumManagerController {
 
     @GetMapping("/releaseyear/{year}")
     public ResponseEntity<List<Album>> getAlbumByReleaseYear (@PathVariable ("year") int year) {
-        List<Album> albumList = albumManagerService.getAllAlbumsByReleaseYear(year);
-        return new ResponseEntity<>(albumList, HttpStatus.OK);
+        List<Album> albumList = new ArrayList<>();
+        try {
+            albumList = albumManagerService.getAllAlbumsByReleaseYear(year);
+            if (albumList.isEmpty()) {
+                throw new RuntimeException();
+            }
+            return new ResponseEntity<>(albumList, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(albumList, HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PostMapping

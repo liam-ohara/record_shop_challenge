@@ -384,6 +384,16 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()));
     }
 
+    @Test
+    @DisplayName("Returns 404 NOT FOUND when no albums have matches to passed artist name")
+    public void testAlbumManagerController_getAlbumByReleaseYear_WhenNoMatchesFound() throws Exception {
 
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByReleaseYear(1980)).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/releaseyear/1978"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
 
 }
