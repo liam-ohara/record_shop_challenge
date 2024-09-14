@@ -344,4 +344,16 @@ class AlbumManagerServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Returns an empty album list when no matches found for valid genre.")
+    public void testAlbumManagerService_getAllAlbumsByGenre_WhenPassedGenreMatchesNoAlbums() {
+
+        when(mockAlbumRepository.findAlbumsByGenre(Genre.ELECTRONIC)).thenReturn(albumList);
+
+        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByGenre("electronic");
+
+        assertEquals(albumList, actualResults);
+
+    }
+
 }
