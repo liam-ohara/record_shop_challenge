@@ -42,12 +42,15 @@ class AlbumManagerServiceImplTest {
     Publisher klingKlang = new Publisher();
     Artist kraftWerkDuplicate = new Artist();
     Publisher klingKlangDuplicate = new Publisher();
+    Artist steeleyeSpan = new Artist();
+    Publisher airStudios = new Publisher();
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
     Album invalidAlbumDate = new Album();
     Album updatedAlbum = new Album();
     Album menschMaschineDuplicate = new Album();
+    Album allAroundMyHat = new Album();
 
     @BeforeEach
     public void setup() {
@@ -59,6 +62,9 @@ class AlbumManagerServiceImplTest {
         kraftWerkDuplicate = Artist.builder()
                 .name("Kraftwerk").build();
 
+        steeleyeSpan = Artist.builder()
+                .name("Steeleye Span").build();
+
         klingKlang = Publisher.builder()
                 .publisherId(1L)
                 .name("Kling Klang")
@@ -67,6 +73,9 @@ class AlbumManagerServiceImplTest {
         klingKlangDuplicate = Publisher.builder()
                 .name("Kling Klang")
                 .build();
+
+        airStudios = Publisher.builder()
+                .name("Air Studios").build();
 
         menschMaschine = Album.builder()
                 .albumId(1L)
@@ -109,6 +118,14 @@ class AlbumManagerServiceImplTest {
                 .publisher(klingKlang)
                 .releaseDate(LocalDate.of(1978, 4, 28))
                 .genre(Genre.ELECTRONIC)
+                .build();
+
+        allAroundMyHat = Album.builder()
+                .name("All Around My Hat")
+                .artist(steeleyeSpan)
+                .publisher(airStudios)
+                .releaseDate(LocalDate.of(1977, 10, 1))
+                .genre(Genre.FOLK)
                 .build();
     }
 
@@ -308,6 +325,20 @@ class AlbumManagerServiceImplTest {
         when(mockAlbumRepository.findAlbumsByReleaseDateBetween(LocalDate.of(1979, 1, 1), LocalDate.of(1980, 1, 1))).thenReturn(albumList);
 
         List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByReleaseYear(1979);
+
+        assertEquals(albumList, actualResults);
+
+    }
+
+    @Test
+    @DisplayName("Returns list of albums by genre passed in when matches found.")
+    public void testAlbumManagerService_getAllAlbumsByGenre_WhenPassedGenreMatchingAlbums() {
+        albumList.add(menschMaschine);
+        albumList.add(computerWelt);
+
+        when(mockAlbumRepository.findAlbumsByGenre(Genre.ELECTRONIC)).thenReturn(albumList);
+
+        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByGenre("electronic");
 
         assertEquals(albumList, actualResults);
 
