@@ -78,12 +78,11 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByGenre(String genre) {
+    public List<Album> getAllAlbumsByGenre(Genre genre) {
         List<Album> listOfMatchingAlbums;
-        Genre genreToSearchBy;
-        genreToSearchBy = Genre.valueOf(genre.toUpperCase());
 
-        listOfMatchingAlbums = albumRepository.findAlbumsByGenre(genreToSearchBy);
+        listOfMatchingAlbums = albumRepository.findAlbumsByGenre(genre);
+
         return listOfMatchingAlbums;
     }
 

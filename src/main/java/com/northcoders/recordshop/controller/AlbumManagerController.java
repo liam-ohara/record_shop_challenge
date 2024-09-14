@@ -2,6 +2,7 @@ package com.northcoders.recordshop.controller;
 
 
 import com.northcoders.recordshop.model.Album;
+import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.service.AlbumManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,9 +73,28 @@ public class AlbumManagerController {
     @GetMapping("/genre/{genre}")
     public ResponseEntity<List<Album>> getAlbumsByGenre(@PathVariable ("genre") String genre) {
         List<Album> albumList = new ArrayList<>();
+        Genre genreToSearchBy = null;
+        ArrayList<String> listOfGenres = new ArrayList<>();
+
+        for (Genre g : Genre.values()) {
+            listOfGenres.add(g.toString());
+        }
 
         try {
-            albumList = albumManagerService.getAllAlbumsByGenre(genre);
+            for (int i = 0; i < listOfGenres.size(); i++) {
+                if (genre.toUpperCase().equals(listOfGenres.get(i))) {
+                    genreToSearchBy = Genre.valueOf(genre.toUpperCase());
+                }
+            }
+                if (genreToSearchBy == null) {
+                    throw new IllegalArgumentException();
+                }
+            } catch (IllegalArgumentException e) {
+                    return new ResponseEntity<>(albumList, HttpStatus.NOT_ACCEPTABLE);
+                }
+
+        try {
+            albumList = albumManagerService.getAllAlbumsByGenre(genreToSearchBy);
             if (albumList.isEmpty()) {
                 throw new RuntimeException();
             }

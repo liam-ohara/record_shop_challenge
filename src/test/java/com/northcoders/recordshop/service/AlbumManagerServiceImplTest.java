@@ -338,7 +338,7 @@ class AlbumManagerServiceImplTest {
 
         when(mockAlbumRepository.findAlbumsByGenre(Genre.ELECTRONIC)).thenReturn(albumList);
 
-        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByGenre("electronic");
+        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByGenre(Genre.ELECTRONIC);
 
         assertEquals(albumList, actualResults);
 
@@ -350,10 +350,11 @@ class AlbumManagerServiceImplTest {
 
         when(mockAlbumRepository.findAlbumsByGenre(Genre.ELECTRONIC)).thenReturn(albumList);
 
-        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByGenre("electronic");
+        List<Album> actualResults = albumManagerServiceImpl.getAllAlbumsByGenre(Genre.ELECTRONIC);
 
         assertEquals(albumList, actualResults);
 
     }
+
 
 }

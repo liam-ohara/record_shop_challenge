@@ -403,7 +403,7 @@ public class AlbumManagerControllerTest {
         albumList.add(menschMaschine);
         albumList.add(computerWelt);
 
-        when(mockAlbumManagerServiceImpl.getAllAlbumsByGenre("electronic")).thenReturn(albumList);
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByGenre(Genre.ELECTRONIC)).thenReturn(albumList);
 
         this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/genre/electronic"))
 
@@ -420,11 +420,21 @@ public class AlbumManagerControllerTest {
     @Test
     @DisplayName("Returns 404 NOT FOUND when no albums have matches to passed genre")
     public void testAlbumManagerController_getAlbumByGenre_WhenNoMatchesFound() throws Exception {
-        when(mockAlbumManagerServiceImpl.getAllAlbumsByGenre("electronic")).thenReturn(albumList);
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByGenre(Genre.ELECTRONIC)).thenReturn(albumList);
 
         this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/genre/electronic"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("Returns 406 NOT ACCEPTABLE when passed an invalid genre")
+    public void testAlbumManagerController_getAlbumsByGenre_WhenPassedInvalidGenre() throws Exception {
+
+                this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/genre/teapot"))
+                .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
+                .andDo(MockMvcResultHandlers.print());
+
     }
 
 
