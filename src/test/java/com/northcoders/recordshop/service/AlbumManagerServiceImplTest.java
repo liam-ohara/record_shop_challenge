@@ -288,10 +288,10 @@ class AlbumManagerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Returns list of albums recorded by artist passed in when matches found.")
+    @DisplayName("Returns list of albums released by year passed in when matches found.")
     public void testAlbumManagerService_getAllAlbumsByReleaseYear_WhenPassedYearMatchingAlbums() {
 
-        artistList.add(kraftWerk);
+        albumList.add(menschMaschine);
 
         when(mockAlbumRepository.findAlbumsByReleaseDateBetween(LocalDate.of(1978, 1, 1), LocalDate.of(1979, 1, 1))).thenReturn(albumList);
 
@@ -300,5 +300,7 @@ class AlbumManagerServiceImplTest {
         assertEquals(albumList, actualResults);
 
     }
+
+
 
 }
