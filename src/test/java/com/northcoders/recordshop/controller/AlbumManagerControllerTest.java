@@ -417,4 +417,15 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].genre").value(Genre.ELECTRONIC.toString()));
     }
 
+    @Test
+    @DisplayName("Returns 404 NOT FOUND when no albums have matches to passed genre")
+    public void testAlbumManagerController_getAlbumByGenre_WhenNoMatchesFound() throws Exception {
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByGenre("electronic")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/genre/electronic"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
 }

@@ -71,8 +71,17 @@ public class AlbumManagerController {
 
     @GetMapping("/genre/{genre}")
     public ResponseEntity<List<Album>> getAlbumsByGenre(@PathVariable ("genre") String genre) {
-        List<Album> albumList = albumManagerService.getAllAlbumsByGenre(genre);
-        return new ResponseEntity<>(albumList, HttpStatus.OK);
+        List<Album> albumList = new ArrayList<>();
+
+        try {
+            albumList = albumManagerService.getAllAlbumsByGenre(genre);
+            if (albumList.isEmpty()) {
+                throw new RuntimeException();
+            }
+            return new ResponseEntity<>(albumList, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(albumList, HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
