@@ -13,7 +13,7 @@ public interface AlbumManagerService {
 
     List<Album> getAllAlbumsByArtist(String artistName);
 
-    List<Album> getAllAlbumsByReleaseYear(Long year);
+    List<Album> getAllAlbumsByReleaseYear(int year);
 
     List<Album> getAllAlbumsByGenre(Genre genre);
 

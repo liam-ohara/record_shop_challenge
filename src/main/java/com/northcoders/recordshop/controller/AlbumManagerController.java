@@ -54,6 +54,12 @@ public class AlbumManagerController {
         }
     }
 
+    @GetMapping("/releaseyear/{year}")
+    public ResponseEntity<List<Album>> getAlbumByReleaseYear (@PathVariable ("year") int year) {
+        List<Album> albumList = albumManagerService.getAllAlbumsByReleaseYear(year);
+        return new ResponseEntity<>(albumList, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Album> insertAlbum(@RequestBody Album album) {
         try {

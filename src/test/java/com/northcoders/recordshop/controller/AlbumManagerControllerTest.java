@@ -367,4 +367,23 @@ public class AlbumManagerControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Returns 200 OK and a list of albums when matches to release year is found")
+    public void testAlbumManagerController_getAlbumByReleaseYear_WhenMatchFound() throws Exception {
+
+        albumList.add(menschMaschine);
+
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByReleaseYear(1978)).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/releaseyear/1978"))
+
+               .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()));
+    }
+
+
+
 }

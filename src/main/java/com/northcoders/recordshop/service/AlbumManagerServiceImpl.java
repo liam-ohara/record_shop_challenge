@@ -66,7 +66,7 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByReleaseYear(Long year) {
+    public List<Album> getAllAlbumsByReleaseYear(int year) {
         return null;
     }
 
