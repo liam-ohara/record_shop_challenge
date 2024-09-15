@@ -104,6 +104,14 @@ public class AlbumManagerController {
         }
     }
 
+    @GetMapping("/albumname/{name}")
+    public ResponseEntity<List<Album>> getAlbumsByAlbumName(@PathVariable ("name") String name) {
+        List<Album> albumList = albumManagerService.getAlbumsByAlbumName(name);
+
+        return new ResponseEntity<>(albumList, HttpStatus.OK);
+
+    }
+
     @PostMapping
     public ResponseEntity<Album> insertAlbum(@RequestBody Album album) {
         try {

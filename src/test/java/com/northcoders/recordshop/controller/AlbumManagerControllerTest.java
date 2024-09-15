@@ -1,6 +1,5 @@
 package com.northcoders.recordshop.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Artist;
@@ -434,8 +433,24 @@ public class AlbumManagerControllerTest {
                 this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/genre/teapot"))
                 .andExpect(MockMvcResultMatchers.status().isNotAcceptable())
                 .andDo(MockMvcResultHandlers.print());
-
     }
 
+    @Test
+    @DisplayName("Returns 200 OK and a list of albums when matches to album name are found")
+    public void testAlbumManagerController_getAlbumsByAlbumName_WhenPassedValidAlbumName() throws Exception {
+
+        albumList.add(computerWelt);
+
+        when(mockAlbumManagerServiceImpl.getAlbumsByAlbumName("computerwelt")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/albumname/computerwelt"))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Computerwelt"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()));
+
+    }
 
 }

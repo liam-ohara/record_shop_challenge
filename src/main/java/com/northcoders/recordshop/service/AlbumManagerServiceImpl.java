@@ -87,7 +87,7 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public Album getAlbumByAlbumName(String albumName) {
+    public List<Album> getAlbumsByAlbumName(String albumName) {
         return null;
     }
 
