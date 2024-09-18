@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlbumManagerServiceImpl implements AlbumManagerService {
@@ -97,10 +98,13 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
             throw new NullPointerException("Missing field(s) in album.");
         }
 
-        if (this.albumRepository.findById(1L).isPresent()) {
+        boolean isAlbumRepositoryPopulated = albumRepository.existsById(1L);
+
+        if (isAlbumRepositoryPopulated) {
             List<Album> listOfAlbums = new ArrayList<>();
             albumRepository.findAll().forEach(listOfAlbums::add);
             Artist artistOfAlbumToPost = album.getArtist();
+            Publisher publisherOfAlbumToPost = album.getPublisher();;
 
             for (int i = 0; i < listOfAlbums.size(); i++) {
                 if (listOfAlbums.get(i).getArtist().getName().equals(artistOfAlbumToPost.getName())) {
@@ -108,13 +112,6 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
                     album.setArtist(artistOfAlbumToPost);
                 }
             }
-        }
-
-        if (this.albumRepository.findById(1L).isPresent()) {
-            List<Album> listOfAlbums = new ArrayList<>();
-            albumRepository.findAll().forEach(listOfAlbums::add);
-            Publisher publisherOfAlbumToPost = album.getPublisher();;
-
 
             for (int j = 0; j < listOfAlbums.size(); j++) {
                 if (listOfAlbums.get(j).getPublisher().getName().equals(publisherOfAlbumToPost.getName())) {
@@ -122,11 +119,13 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
                     album.setPublisher(publisherOfAlbumToPost);
                 }
             }
+            albumRepository.save(album);
+        } else {
+            artistRepository.save(album.getArtist());
+            publisherRepository.save(album.getPublisher());
+            albumRepository.save(album);
         }
 
-        artistRepository.save(album.getArtist());
-        publisherRepository.save(album.getPublisher());
-        albumRepository.save(album);
         return album;
     }
 //Refactor to include some of logical from above - as incoming album does not contain

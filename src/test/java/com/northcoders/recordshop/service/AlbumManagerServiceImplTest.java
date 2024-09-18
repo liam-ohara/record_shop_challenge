@@ -187,8 +187,10 @@ class AlbumManagerServiceImplTest {
     public void testAlbumManagerService_insertAlbum_WhenPassedDuplicateAlbum() {
 
 
+        when(mockAlbumRepository.existsById(1L)).thenReturn(false);
         when(mockAlbumRepository.save(menschMaschine)).thenReturn(menschMaschine);
         albumManagerServiceImpl.insertAlbum(menschMaschine);
+        when(mockAlbumRepository.existsById(1L)).thenReturn(true);
         when(mockAlbumRepository.save(menschMaschineDuplicate)).thenReturn(menschMaschineDuplicate);
 
         Album result = albumManagerServiceImpl.insertAlbum(menschMaschineDuplicate);
@@ -196,6 +198,8 @@ class AlbumManagerServiceImplTest {
         assertAll(
                 () -> assertEquals(1L, result.getArtist().getArtistId()),
                 () -> assertEquals(1L, result.getPublisher().getPublisherId()));
+
+
 
     }
 

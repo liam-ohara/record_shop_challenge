@@ -31,12 +31,12 @@ public class Album {
     @ManyToOne
             //Cascade annotation is required to pass repository test for duplicate
             //POST/save requests with same record
-            (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+//            (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(referencedColumnName = "artist_id", nullable = false)
     Artist artist;
 
     @ManyToOne
-            (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+//            (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(referencedColumnName = "publisher_id", nullable = false)
     Publisher publisher;
 

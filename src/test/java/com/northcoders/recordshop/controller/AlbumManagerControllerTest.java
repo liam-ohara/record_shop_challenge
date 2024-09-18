@@ -92,7 +92,7 @@ public class AlbumManagerControllerTest {
                 .name("Electric Café")
                 .artist(kraftWerk)
                 .publisher(klingKlang)
-                .releaseDate(LocalDate.of(2981, 2, 11))
+                .releaseDate(LocalDate.of(1986, 11, 3))
                 .genre(Genre.ELECTRONIC)
                 .build();
 
@@ -452,5 +452,25 @@ public class AlbumManagerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()));
 
     }
+
+    @Test
+    @DisplayName("Returns 200 OK and a list of albums when an album name with spaces is passed")
+    public void testAlbumManagerController_getAlbumsByAlbumName_WhenPassedAlbumNameWithSpaces() throws Exception {
+
+        albumList.add(menschMaschine);
+
+        when(mockAlbumManagerServiceImpl.getAlbumsByAlbumName("Die Mensch-Maschine")).thenReturn(albumList);
+
+        //The URI needs to be encoded properly for this test see: https://www.baeldung.com/java-url-encoding-decoding
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/albumname/Die%20Mensch-Maschine"))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Die Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.ELECTRONIC.toString()));
+
+    }
+
 
 }
