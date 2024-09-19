@@ -113,13 +113,23 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
                 }
             }
 
+            if (album.getArtist().getArtistId() == null) {
+                artistRepository.save(album.getArtist());
+            }
+
             for (int j = 0; j < listOfAlbums.size(); j++) {
                 if (listOfAlbums.get(j).getPublisher().getName().equals(publisherOfAlbumToPost.getName())) {
                     publisherOfAlbumToPost.setPublisherId(listOfAlbums.get(j).getPublisher().getPublisherId());
                     album.setPublisher(publisherOfAlbumToPost);
                 }
             }
+
+            if (album.getPublisher().getPublisherId() == null) {
+                publisherRepository.save(album.getPublisher());
+            }
+
             albumRepository.save(album);
+
         } else {
             artistRepository.save(album.getArtist());
             publisherRepository.save(album.getPublisher());
