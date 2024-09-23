@@ -217,7 +217,7 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
             }
 
             if (replacingAlbum.getPublisher().getPublisherId() == null) {
-                for (int k = 0; k < artistList.size(); k++) {
+                for (int k = 0; k < publisherList.size(); k++) {
                     if (publisherList.get(k).getName().equals(replacingAlbum.getPublisher().getName())) {
                         replacingAlbum.setPublisher(publisherList.get(k));
                     } else {
