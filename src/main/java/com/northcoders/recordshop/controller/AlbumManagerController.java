@@ -153,8 +153,6 @@ public class AlbumManagerController {
         }
     @PatchMapping("/{id}")
     public ResponseEntity<Album> updateAlbum (@PathVariable("id") Long id, @RequestBody Album updatedAlbum) {
-        Album checkedAlbum = new Album();
-
         try {
             if (albumManagerService.getAlbumById(id) == null) {
                 throw new NullPointerException();
@@ -162,6 +160,8 @@ public class AlbumManagerController {
        } catch (NullPointerException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+
+       updatedAlbum.setAlbumId(id);
 
         albumManagerService.replaceAlbum(id, updatedAlbum);
         return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);

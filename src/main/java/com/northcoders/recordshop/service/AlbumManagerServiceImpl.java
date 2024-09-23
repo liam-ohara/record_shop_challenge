@@ -198,6 +198,18 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
                 for (int i = 0; i < artistList.size(); i++) {
                     if (artistList.get(i).getName().equals(replacingAlbum.getArtist().getName())) {
                         replacingAlbum.setArtist(artistList.get(i));
+                    } else {
+                        artistRepository.save(replacingAlbum.getArtist());
+                        artistList.clear();
+                        Artist newArtist = new Artist();
+                        artistRepository.findAll().forEach(artistList::add);
+                        for (int j = 0; j < artistList.size(); j++) {
+                            if (artistList.get(j).getName().equals(replacingAlbum.getArtist().getName())) {
+                                newArtist.setArtistId(artistList.get(j).getArtistId());
+                                newArtist.setName(artistList.get(j).getName());
+                            }
+                        }
+                        replacingAlbum.setArtist(newArtist);
                     }
                 }
             } else {
@@ -205,9 +217,21 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
             }
 
             if (replacingAlbum.getPublisher().getPublisherId() == null) {
-                for (int j = 0; j < artistList.size(); j++) {
-                    if (publisherList.get(j).getName().equals(replacingAlbum.getPublisher().getName())) {
-                        replacingAlbum.setPublisher(publisherList.get(j));
+                for (int k = 0; k < artistList.size(); k++) {
+                    if (publisherList.get(k).getName().equals(replacingAlbum.getPublisher().getName())) {
+                        replacingAlbum.setPublisher(publisherList.get(k));
+                    } else {
+                        publisherRepository.save(replacingAlbum.getPublisher());
+                        publisherList.clear();
+                        Publisher newPublisher = new Publisher();
+                        publisherRepository.findAll().forEach(publisherList::add);
+                        for (int l = 0; l < publisherList.size(); l++) {
+                            if (publisherList.get(l).getName().equals(replacingAlbum.getPublisher().getName())) {
+                                newPublisher.setName(publisherList.get(l).getName());
+                                newPublisher.setPublisherId(publisherList.get(l).getPublisherId());
+                            }
+                        }
+                        replacingAlbum.setPublisher(newPublisher);
                     }
                 }
             } else {
