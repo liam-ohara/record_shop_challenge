@@ -254,7 +254,7 @@ public class AlbumManagerControllerTest {
     }
 
     @Test
-    @DisplayName("Returns 406 Not Acceptable error when JSON with invalid release date submitted as part of POST request")
+    @DisplayName("Returns 400 Bad Request error when JSON with invalid release date submitted as part of POST request")
     public void testAlbumManagerController_replaceAlbum_WithInvalidReleaseData() throws Exception {
 
         when(mockAlbumManagerServiceImpl.replaceAlbum(invalidAlbumDate.getAlbumId(), invalidAlbumDate)).thenReturn(invalidAlbumDate);
