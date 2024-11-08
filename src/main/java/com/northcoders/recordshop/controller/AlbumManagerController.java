@@ -15,19 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/album")
+@RequestMapping("/api/v1/")
 public class AlbumManagerController {
 
     @Autowired
     AlbumManagerService albumManagerService;
 
-    @GetMapping
+    @GetMapping("/album")
     public ResponseEntity<List<Album>> getAllAlbums() {
         List<Album> albumList = albumManagerService.getAllAlbums();
         return new ResponseEntity<>(albumList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/album/{id}")
     public ResponseEntity<Album> getAlbumById(@PathVariable Long id) {
         Album album;
         try {
@@ -112,7 +112,7 @@ public class AlbumManagerController {
 
     }
 
-    @PostMapping
+    @PostMapping("/album")
     public ResponseEntity<Album> insertAlbum(@RequestBody Album album) {
         try {
             albumManagerService.insertAlbum(album);
@@ -129,7 +129,7 @@ public class AlbumManagerController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/album/{id}")
     public ResponseEntity<Album> replaceAlbum (@PathVariable("id") Long id, @RequestBody Album replacingAlbum) {
         try {
             if (replacingAlbum.getName() == null || replacingAlbum.getArtist() == null || replacingAlbum.getPublisher() == null || replacingAlbum.getReleaseDate() == null || replacingAlbum.getGenre() == null) {
@@ -151,7 +151,7 @@ public class AlbumManagerController {
             }
 
         }
-    @PatchMapping("/{id}")
+    @PatchMapping("/album/{id}")
     public ResponseEntity<Album> updateAlbum (@PathVariable("id") Long id, @RequestBody Album updatedAlbum) {
         try {
             if (albumManagerService.getAlbumById(id) == null) {
@@ -168,7 +168,7 @@ public class AlbumManagerController {
 
     }
 
-        @DeleteMapping("/{id}")
+        @DeleteMapping("/album/{id}")
 
     public ResponseEntity<Album> deleteAlbum (@PathVariable("id") Long id) {
         Album albumForDeletion;
