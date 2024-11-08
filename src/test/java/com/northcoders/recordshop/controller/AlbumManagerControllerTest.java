@@ -503,7 +503,7 @@ public class AlbumManagerControllerTest {
 
         when(mockAlbumManagerServiceImpl.getAlbumsByAlbumName("Die Mensch-Maschine")).thenReturn(albumList);
 
-        //The URI needs to be encoded properly for this test see: https://www.baeldung.com/java-url-encoding-decoding
+
         this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/albumname/Die%20Mensch-Maschine"))
 
                 .andExpect(MockMvcResultMatchers.status().isOk())

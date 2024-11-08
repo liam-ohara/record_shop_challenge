@@ -107,9 +107,12 @@ public class AlbumManagerController {
         }
     }
 
-    @GetMapping("/albumname/{name}")
-    public ResponseEntity<List<Album>> getAlbumsByAlbumName(@PathVariable ("name") String name) {
-        List<Album> albumList = albumManagerService.getAlbumsByAlbumName(name);
+    @GetMapping("/album/albumname/{name}")
+    public ResponseEntity<List<Album>> getAlbumsByAlbumName(@PathVariable ("name") String albumName) {
+        List<Album> albumList = new ArrayList<>();
+        String decodedURI = albumName.replaceAll("%20", " ");
+
+        albumList = albumManagerService.getAlbumsByAlbumName(decodedURI);
 
         return new ResponseEntity<>(albumList, HttpStatus.OK);
 
