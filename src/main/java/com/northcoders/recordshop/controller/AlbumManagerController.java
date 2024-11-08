@@ -10,12 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class AlbumManagerController {
 
     @Autowired
@@ -44,8 +45,10 @@ public class AlbumManagerController {
     @GetMapping("/artist/{artistName}")
     public ResponseEntity<List<Album>> getAlbumsByArtistName (@PathVariable ("artistName") String artistName) {
         List<Album> albumList = new ArrayList<>();
+        String decodedURI = artistName.replaceAll("%20", " ");
+
         try {
-            albumList = albumManagerService.getAllAlbumsByArtist(artistName);
+            albumList = albumManagerService.getAllAlbumsByArtist(decodedURI);
             if (albumList.isEmpty()) {
                 throw new RuntimeException();
             }

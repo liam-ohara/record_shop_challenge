@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +46,15 @@ public class AlbumManagerControllerTest {
 
     List<Album> albumList = new ArrayList<>();
     Artist kraftWerk = new Artist();
+    Artist steeleyeSpan = new Artist();
     Publisher klingKlang = new Publisher();
+    Publisher airStudios = new Publisher();
     Album menschMaschine = new Album();
     Album computerWelt = new Album();
     Album invalidAlbum = new Album();
     Album invalidAlbumDate = new Album();
     Album updatedAlbum = new Album();
+    Album allAroundMyHat = new Album();
 
     @BeforeEach
     public void setup() {
@@ -62,10 +67,18 @@ public class AlbumManagerControllerTest {
                 .artistId(1L)
                 .name("Kraftwerk").build();
 
+        steeleyeSpan = Artist.builder()
+                .artistId(2L)
+                .name("Steeleye Span").build();
+
         klingKlang = Publisher.builder()
                 .publisherId(1L)
                 .name("Kling Klang")
                 .build();
+
+        airStudios = Publisher.builder()
+                .publisherId(2L)
+                .name("Air Studios").build();
 
         menschMaschine = Album.builder()
                 .albumId(1L)
@@ -104,6 +117,15 @@ public class AlbumManagerControllerTest {
                 .releaseDate(LocalDate.of(1986, 11, 10))
                 .genre(Genre.ELECTRONIC)
                 .build();
+
+        allAroundMyHat = Album.builder()
+                .albumId(3L)
+                .name("All Around My Hat")
+                .artist(steeleyeSpan)
+                .publisher(airStudios)
+                .releaseDate(LocalDate.of(1977, 10, 1))
+                .genre(Genre.FOLK).build();
+
     }
 
     @Test
@@ -342,7 +364,7 @@ public class AlbumManagerControllerTest {
 
         when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk")).thenReturn(albumList);
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/artist/Kraftwerk"))
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/artist/Kraftwerk"))
 
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
@@ -360,9 +382,29 @@ public class AlbumManagerControllerTest {
 
         when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk")).thenReturn(albumList);
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/artist/Kraftwerk"))
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/artist/Kraftwerk"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @DisplayName("Returns 200 OK and a list of albums when an artist name with spaces is passed")
+    public void testAlbumManagerController_getAlbumByArtistName_WhenPassedArtistNameWithSpaces() throws Exception {
+
+        albumList.add(allAroundMyHat);
+        String getRequest = "/api/v1/artist/Steeleye%20Span";
+        URI uri = new URI(getRequest);
+
+        when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Steeleye Span")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get(uri))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumId").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("All Around My Hat"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value(Genre.FOLK.toString()));
 
     }
 
