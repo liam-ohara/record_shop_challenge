@@ -364,7 +364,7 @@ public class AlbumManagerControllerTest {
 
         when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk")).thenReturn(albumList);
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/artist/Kraftwerk"))
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/artist/Kraftwerk"))
 
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
@@ -382,7 +382,7 @@ public class AlbumManagerControllerTest {
 
         when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Kraftwerk")).thenReturn(albumList);
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/artist/Kraftwerk"))
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/artist/Kraftwerk"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
 
@@ -393,7 +393,7 @@ public class AlbumManagerControllerTest {
     public void testAlbumManagerController_getAlbumByArtistName_WhenPassedArtistNameWithSpaces() throws Exception {
 
         albumList.add(allAroundMyHat);
-        String getRequest = "/api/v1/artist/Steeleye%20Span";
+        String getRequest = "/api/v1/album/artist/Steeleye%20Span";
         URI uri = new URI(getRequest);
 
         when(mockAlbumManagerServiceImpl.getAllAlbumsByArtist("Steeleye Span")).thenReturn(albumList);

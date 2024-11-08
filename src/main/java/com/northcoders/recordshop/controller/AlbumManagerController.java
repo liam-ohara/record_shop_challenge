@@ -42,7 +42,7 @@ public class AlbumManagerController {
         }
     }
 
-    @GetMapping("/artist/{artistName}")
+    @GetMapping("/album/artist/{artistName}")
     public ResponseEntity<List<Album>> getAlbumsByArtistName (@PathVariable ("artistName") String artistName) {
         List<Album> albumList = new ArrayList<>();
         String decodedURI = artistName.replaceAll("%20", " ");
