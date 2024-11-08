@@ -514,5 +514,17 @@ public class AlbumManagerControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Returns 404 NOT FOUND when no albums have matches to passed album name")
+    public void testAlbumManagerController_getAlbumsByAlbumName_WhenNoMatchesFound() throws Exception {
+        when(mockAlbumManagerServiceImpl.getAlbumsByAlbumName("Die Mensch-Maschine")).thenReturn(albumList);
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/albumname/Die%20Mensch-Maschine"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
+
 
 }

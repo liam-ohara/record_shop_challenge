@@ -112,10 +112,19 @@ public class AlbumManagerController {
         List<Album> albumList = new ArrayList<>();
         String decodedURI = albumName.replaceAll("%20", " ");
 
-        albumList = albumManagerService.getAlbumsByAlbumName(decodedURI);
+        try {
+            albumList = albumManagerService.getAlbumsByAlbumName(decodedURI);
 
-        return new ResponseEntity<>(albumList, HttpStatus.OK);
+            if (albumList.isEmpty()) {
+                throw new RuntimeException();
 
+            }
+            return new ResponseEntity<>(albumList, HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(albumList, HttpStatus.NOT_FOUND);
+
+        }
     }
 
     @PostMapping("/album")
